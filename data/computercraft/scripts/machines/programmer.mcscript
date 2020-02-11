@@ -10,8 +10,8 @@ asat(@e[tag=isCustomBlock,tag=block3]) {
     }
 
     // Normalize scroll value
-    if ('score @s scroll matches 21..') {
-        /scoreboard players set @s scroll 20
+    if ('score @s scroll matches 51..') {
+        /scoreboard players set @s scroll 50
     }
     if ('score @s scroll matches 0') {
         /scoreboard players set @s scroll 1
@@ -25,7 +25,7 @@ asat(@e[tag=isCustomBlock,tag=block3]) {
         }
         if('data entity @s {Tags:["scroll"]}') {
             // Load inventory
-            for (1,20, scrl) {
+            for (1,50, scrl) {
                 if ('score @s scroll matches $(scrl)') {
                     /data modify block ~ ~ ~ Items[{Slot:17b}].tag.code.$(scrl) append from block ~ ~ ~ Items[{Slot:17b}]
                     /data modify block ~ ~ ~ Items set from block ~ ~ ~ Items[{Slot:17b}].tag.code.$(scrl)
@@ -34,12 +34,21 @@ asat(@e[tag=isCustomBlock,tag=block3]) {
             }
         } else {
             // Save inventory
-            for (1,20, scrl) {
+            /scoreboard players set @s temp 0
+            for (1,50, scrl) {
                 if ('score @s scroll matches $(scrl)') {
                     /data modify block ~ ~ ~ Items[{Slot:17b}].tag.code.$(scrl) set from block ~ ~ ~ Items
                     /data remove block ~ ~ ~ Items[{Slot:17b}].tag.code.$(scrl)[{Slot:8b}]
                     /data remove block ~ ~ ~ Items[{Slot:17b}].tag.code.$(scrl)[{Slot:17b}]
                     /data remove block ~ ~ ~ Items[{Slot:17b}].tag.code.$(scrl)[{Slot:26b}]
+                }
+                if ('data block ~ ~ ~ Items[{Slot:17b}].tag.code.$(scrl)[]') {
+                    /scoreboard players add @s temp 1
+                }
+            }
+            for (0,50) {
+                if ('score @s temp matches $(i)') {
+                    /data modify block ~ ~ ~ Items[{Slot:17b}].tag.display.Lore set value ['[{"text":"$(i) of 50 pages used", "italic": false, "color": "gray"}]', '[{"text":"Not compiled", "italic": false, "color": "red"}]']
                 }
             }
         }
@@ -79,9 +88,9 @@ asat(@e[tag=isCustomBlock,tag=block3]) {
 
     // Fill in GUI design items
     if (!"data block ~ ~ ~ {Items:[{Slot:8b}]}") {
-        for (1,20, scrl) {
+        for (1,50, scrl) {
             if ('score @s scroll matches $(scrl)') {
-                /replaceitem block ~ ~ ~ container.8 minecraft:paper{CustomModelData:24104,display:{Name:'[{"text":"Page up", "italic": false}]', Lore:['[{"text":"Current page: $(scrl) of 20", "italic": false}]']}} 1
+                /replaceitem block ~ ~ ~ container.8 minecraft:paper{CustomModelData:24104,display:{Name:'[{"text":"Page up", "italic": false}]', Lore:['[{"text":"Current page: $(scrl) of 50", "italic": false}]']}} 1
             }
         }
     }
@@ -89,9 +98,9 @@ asat(@e[tag=isCustomBlock,tag=block3]) {
         /replaceitem block ~ ~ ~ container.17 minecraft:paper{CustomModelData:24106,display:{Name:'[{"text":"Insert storage here"}]'}} 1
     }
     if(!"data block ~ ~ ~ {Items:[{Slot:26b}]}") {
-        for (1,20, scrl) {
+        for (1,50, scrl) {
             if ('score @s scroll matches $(scrl)') {
-                /replaceitem block ~ ~ ~ container.26 minecraft:paper{CustomModelData:24105,display:{Name:'[{"text":"Page down", "italic": false}]', Lore:['[{"text":"Current page: $(scrl) of 20", "italic": false}]']}} 1
+                /replaceitem block ~ ~ ~ container.26 minecraft:paper{CustomModelData:24105,display:{Name:'[{"text":"Page down", "italic": false}]', Lore:['[{"text":"Current page: $(scrl) of 50", "italic": false}]']}} 1
             }
         }
     }

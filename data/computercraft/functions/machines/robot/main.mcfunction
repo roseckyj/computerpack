@@ -17,4 +17,4 @@ execute as @a[nbt={Inventory:[{tag:{CC_Give_Robot:1b}}]}] run tag @s add CC_Give
 execute as @a[tag=CC_Give_Robot] at @s run clear @s minecraft:iron_pickaxe{CC_Give_Robot:1b}
 execute as @a[tag=CC_Give_Robot] at @s run give @s minecraft:firework_rocket{CustomModelData:24001,CC_Summon_Robot:1b,display:{Name:"[{\"text\":\"Robot\",\"italic\":false}]"}} 1
 execute as @a[tag=CC_Give_Robot] at @s run tag @s remove CC_Give_Robot
-execute if score CC gameTicks matches 0 run function computercraft:machines/robot/tick
+execute as @e[tag=CC_Robot_Body] at @s if score CC gameTicks matches 0 run function computercraft:machines/robot/tick

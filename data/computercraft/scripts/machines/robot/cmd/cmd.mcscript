@@ -1,0 +1,35 @@
+#file: ./left
+/tp @s ~ ~ ~ ~-90 0
+
+#file: ./right
+/tp @s ~ ~ ~ ~90 0
+
+#file: ./up
+/execute if block ~ ~3 ~ air run tp @s ~ ~1 ~
+
+#file: ./down
+/execute if block ~ ~1 ~ air run tp @s ~ ~-1 ~
+
+#file: ./fwd
+/execute if block ~ ~2 ~1 air if score @s currentRotation matches 0 run tp @s ~ ~ ~1
+/execute if block ~-1 ~2 ~ air if score @s currentRotation matches 90 run tp @s ~-1 ~ ~
+/execute if block ~ ~2 ~-1 air if score @s currentRotation matches 180 run tp @s ~ ~ ~-1
+/execute if block ~1 ~2 ~ air if score @s currentRotation matches 270 run tp @s ~1 ~ ~
+
+#file: ./back
+/execute if block ~ ~2 ~1 air if score @s currentRotation matches 0 run tp @s ~ ~ ~-1
+/execute if block ~-1 ~2 ~ air if score @s currentRotation matches 90 run tp @s ~1 ~ ~
+/execute if block ~ ~2 ~-1 air if score @s currentRotation matches 180 run tp @s ~ ~ ~1
+/execute if block ~1 ~2 ~ air if score @s currentRotation matches 270 run tp @s ~-1 ~ ~
+
+#file: ./mine
+/execute if score @s currentRotation matches 0 run setblock ~ ~2 ~1 minecraft:air destroy
+/execute if score @s currentRotation matches 90 run setblock ~-1 ~2 ~ minecraft:air destroy
+/execute if score @s currentRotation matches 180 run setblock ~ ~2 ~-1 minecraft:air destroy
+/execute if score @s currentRotation matches 270 run setblock ~1 ~2 ~ minecraft:air destroy
+
+#file: ./hit
+/execute if score @s currentRotation matches 0 positioned ~ ~2 ~1 as @e[distance=0..1.2,sort=nearest,limit=1,type=!minecraft:armor_stand] run function computercraft:common/damage
+/execute if score @s currentRotation matches 90 positioned ~-1 ~2 ~1 as @e[distance=0..1.2,sort=nearest,limit=1,type=!minecraft:armor_stand] run function computercraft:common/damage
+/execute if score @s currentRotation matches 180 positioned ~ ~2 ~-1 as @e[distance=0..1.2,sort=nearest,limit=1,type=!minecraft:armor_stand] run function computercraft:common/damage
+/execute if score @s currentRotation matches 270 positioned ~1 ~2 ~ as @e[distance=0..1.2,sort=nearest,limit=1,type=!minecraft:armor_stand] run function computercraft:common/damage

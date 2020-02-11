@@ -1,4 +1,12 @@
 modal compilation_error(title, description) {
     /tag @s add compilation_error
-    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error set value '[{"text":"$(title): ", "italic": false, "bold": true, "color": "white"},{"text":"$(description)", "bold": false, "italic": false, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error set value '[{"text":"$(title): ", "italic": false, "bold": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_desc set value '[{"text":"  $(description)", "bold": false, "italic": false, "color": "white"}]'
+
+    /tag @s remove compilation_merge
+    /tag @s remove compilation_parsing
+    /tag @s remove compilation_translating
+    /tag @s remove compilation_grouping
+    /tag @s remove compilation_controls
+    /tag @s remove compilation_done
 }

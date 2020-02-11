@@ -19,6 +19,7 @@ asat(@e[tag=isCustomBlock,tag=block4]) {
             /function computercraft:machines/compiler/compilation/00
 
             /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error set value ""
+            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_desc set value ""
             /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.merged set value []
 
             /tag @s add compilation_merge
@@ -86,10 +87,14 @@ asat(@e[tag=isCustomBlock,tag=block4]) {
             remove_all_tags()
 
             /data modify block ~ ~ ~ Items[{Slot:13b}].tag.display.Lore prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error
+            /data modify block ~ ~ ~ Items[{Slot:13b}].tag.display.Lore append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_desc
         }
 
         // --------------- Compilation done ------------------
-        if('data entity @s {Tags:["compilation_done"]}') {          
+        if('data entity @s {Tags:["compilation_done"]}') {    
+            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compiled set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res
+            /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation
+            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.display.Lore[1] set value '[{"text":"Compiled", "italic": false, "color": "green"}]'
             /data modify block ~ ~ ~ Items[{Slot:11b}].Slot set value 15b
         }
 

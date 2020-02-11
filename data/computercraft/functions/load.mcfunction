@@ -6,11 +6,11 @@
 ######
 function computercraft:mcscript/load
 
-scoreboard objectives add currentCommand dummy
 scoreboard objectives add currentRotation dummy
 scoreboard objectives add robotId dummy
 scoreboard objectives add paper dummy
 scoreboard objectives add temp dummy
+scoreboard objectives add temp2 dummy
 scoreboard objectives add recipe dummy
 scoreboard objectives add scroll dummy
 scoreboard objectives add gameTicks dummy
@@ -18,35 +18,8 @@ scoreboard players set CC gameTicks 0
 scoreboard objectives add currentRobotId dummy
 scoreboard players set CC currentRobotId 1
 scoreboard objectives add ticksPerCommand dummy
-scoreboard players set CC ticksPerCommand 15
+scoreboard players set CC ticksPerCommand 5
 scoreboard objectives add maxCommands dummy
 scoreboard players set CC maxCommands 27
 scoreboard objectives add maxAngle dummy
 scoreboard players set CC maxAngle 360
-scoreboard objectives add slot0 dummy
-scoreboard objectives add slot1 dummy
-scoreboard objectives add slot2 dummy
-scoreboard objectives add slot3 dummy
-scoreboard objectives add slot4 dummy
-scoreboard objectives add slot5 dummy
-scoreboard objectives add slot6 dummy
-scoreboard objectives add slot7 dummy
-scoreboard objectives add slot8 dummy
-scoreboard objectives add slot9 dummy
-scoreboard objectives add slot10 dummy
-scoreboard objectives add slot11 dummy
-scoreboard objectives add slot12 dummy
-scoreboard objectives add slot13 dummy
-scoreboard objectives add slot14 dummy
-scoreboard objectives add slot15 dummy
-scoreboard objectives add slot16 dummy
-scoreboard objectives add slot17 dummy
-scoreboard objectives add slot18 dummy
-scoreboard objectives add slot19 dummy
-scoreboard objectives add slot20 dummy
-scoreboard objectives add slot21 dummy
-scoreboard objectives add slot22 dummy
-scoreboard objectives add slot23 dummy
-scoreboard objectives add slot24 dummy
-scoreboard objectives add slot25 dummy
-scoreboard objectives add slot26 dummy

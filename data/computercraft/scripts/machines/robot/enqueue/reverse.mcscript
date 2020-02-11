@@ -1,0 +1,5 @@
+if ('data entity @s HandItems[0].tag.execution.to_enqueue[]') {
+    /data modify entity @s HandItems[0].tag.execution.to_enqueue_reversed prepend from entity @s HandItems[0].tag.execution.to_enqueue[0]
+    /data remove entity @s HandItems[0].tag.execution.to_enqueue[0]
+    /function computercraft:machines/robot/enqueue/reverse
+}

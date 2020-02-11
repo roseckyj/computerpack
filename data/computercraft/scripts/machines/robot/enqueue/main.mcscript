@@ -1,0 +1,3 @@
+/data modify entity @s HandItems[0].tag.execution.to_enqueue_reversed set value []
+/function computercraft:machines/robot/enqueue/reverse
+/function computercraft:machines/robot/enqueue/enqueue

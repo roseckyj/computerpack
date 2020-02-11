@@ -7,4 +7,4 @@
 scoreboard players add CC gameTicks 1
 scoreboard players operation CC gameTicks %= CC ticksPerCommand
 function computercraft:crafting
-function computercraft:machines/main
+function computercraft:machines/main

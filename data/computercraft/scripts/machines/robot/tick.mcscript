@@ -1,6 +1,9 @@
-// Parse inventory
-/function computercraft:machines/robot/parse_inventory
-
+// Enqueue whole program, if queue is empty
+if(!'data entity @s HandItems[0].tag.execution.queue[]') {
+    /data modify entity @s HandItems[0].tag.execution.to_enqueue set from entity @s HandItems[0].tag.compiled
+    /function computercraft:machines/robot/enqueue/main
+}
+ 
 // Parse rotation
 /execute as @e[tag=CC_Robot_Body] at @s store result score @s currentRotation run data get entity @s Rotation[0]
 /scoreboard players operation @e[tag=CC_Robot_Body] currentRotation += CC maxAngle
@@ -9,23 +12,53 @@
 // Clear own block
 /execute as @e[tag=CC_Robot_Body] at @s run setblock ~ ~2 ~ minecraft:air destroy
 
-// Execute commands
-for(0,26){
-    /execute as @e[tag=CC_Robot_Body] at @s if score @s currentCommand matches $(i) if score @s slot$(i) matches 24002 run function computercraft:machines/robot/cmd/fwd
-    /execute as @e[tag=CC_Robot_Body] at @s if score @s currentCommand matches $(i) if score @s slot$(i) matches 24003 run function computercraft:machines/robot/cmd/right
-    /execute as @e[tag=CC_Robot_Body] at @s if score @s currentCommand matches $(i) if score @s slot$(i) matches 24004 run function computercraft:machines/robot/cmd/left
-    // if
-    /execute as @e[tag=CC_Robot_Body] at @s if score @s currentCommand matches $(i) if score @s slot$(i) matches 24006 run function computercraft:machines/robot/cmd/mine
-    /execute as @e[tag=CC_Robot_Body] at @s if score @s currentCommand matches $(i) if score @s slot$(i) matches 24007 run function computercraft:machines/robot/cmd/up
-    /execute as @e[tag=CC_Robot_Body] at @s if score @s currentCommand matches $(i) if score @s slot$(i) matches 24008 run function computercraft:machines/robot/cmd/down
-    /execute as @e[tag=CC_Robot_Body] at @s if score @s currentCommand matches $(i) if score @s slot$(i) matches 24009 run function computercraft:machines/robot/cmd/back
+// Check for empty program
+if('data entity @s HandItems[0].tag.execution.queue[]') {
+    /data modify entity @s HandItems[0].tag.execution.temp set from entity @s HandItems[0].tag.execution.queue[0]
+} else {
+    /data modify entity @s HandItems[0].tag.execution.temp set value {}
 }
 
-// Next cmd
-/scoreboard players add @e[tag=CC_Robot_Body] currentCommand 1
-/scoreboard players operation @e[tag=CC_Robot_Body] currentCommand %= CC maxCommands
+// Remove first item from queue
+/data remove entity @s HandItems[0].tag.execution.queue[0]
 
-// Skip empty slots
-for(0,26){
-    /execute as @e[tag=CC_Robot_Body] at @s if score @s currentCommand matches $(i) if score @s slot$(i) matches 0 run scoreboard players set @s currentCommand 0
+// --------------- Execute commands ----------------
+
+// Standard command
+if('data entity @s HandItems[0].tag.execution.temp{type:1}') {
+    if('data entity @s HandItems[0].tag.execution.temp{cmd:24002}') {
+        /function computercraft:machines/robot/cmd/fwd
+    }
+    if('data entity @s HandItems[0].tag.execution.temp{cmd:24003}') {
+        /function computercraft:machines/robot/cmd/right
+    }
+    if('data entity @s HandItems[0].tag.execution.temp{cmd:24004}') {
+        /function computercraft:machines/robot/cmd/left
+    }
+    if('data entity @s HandItems[0].tag.execution.temp{cmd:24006}') {
+        /function computercraft:machines/robot/cmd/mine
+    }
+    if('data entity @s HandItems[0].tag.execution.temp{cmd:24007}') {
+        /function computercraft:machines/robot/cmd/up
+    }
+    if('data entity @s HandItems[0].tag.execution.temp{cmd:24008}') {
+        /function computercraft:machines/robot/cmd/down
+    }
+    if('data entity @s HandItems[0].tag.execution.temp{cmd:24009}') {
+        /function computercraft:machines/robot/cmd/back
+    }
+}
+
+// If statement
+if('data entity @s HandItems[0].tag.execution.temp{type:3}') {
+    // TODO: check for condition
+    detect_block(0,1,0)
+    /execute store success entity @s HandItems[0].tag.execution.block_not_match byte 1 run data modify entity @s HandItems[0].tag.execution.block set from entity @s HandItems[0].tag.execution.temp.condition[0].id
+    if ('data entity @s HandItems[0].tag.execution{block_not_match:0b}') {
+        /data modify entity @s HandItems[0].tag.execution.to_enqueue set from entity @s HandItems[0].tag.execution.temp.then
+    } else {
+        /data modify entity @s HandItems[0].tag.execution.to_enqueue set from entity @s HandItems[0].tag.execution.temp.else
+    }
+    
+    /function computercraft:machines/robot/enqueue/main
 }

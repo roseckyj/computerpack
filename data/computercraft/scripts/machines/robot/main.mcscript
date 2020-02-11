@@ -37,4 +37,4 @@ asat(@a[tag=CC_Give_Robot]){
 }
 
 // Run commands
-/execute if score CC gameTicks matches 0 run function computercraft:machines/robot/tick
+/execute as @e[tag=CC_Robot_Body] at @s if score CC gameTicks matches 0 run function computercraft:machines/robot/tick

@@ -17,7 +17,14 @@ execute if data entity @s {Tags:["compilation_empty_stack"]} run data remove blo
 execute if data entity @s {Tags:["compilation_empty_stack"]} run tag @s remove compilation_empty_stack
 
 execute unless data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[] run tag @s add compilation_error
-execute unless data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[] run data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error set value '[{"text":"Brackets without control block: ", "italic": false, "bold": true, "color": "white"},{"text":"no control block (e.g. IF, FOR) found", "bold": false, "italic": false, "color": "white"}]'
+execute unless data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[] run data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error set value '[{"text":"Brackets without control block: ", "italic": false, "bold": true, "color": "white"}]'
+execute unless data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[] run data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_desc set value '[{"text":"  no control block (e.g. IF, FOR) found", "bold": false, "italic": false, "color": "white"}]'
+execute unless data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[] run tag @s remove compilation_merge
+execute unless data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[] run tag @s remove compilation_parsing
+execute unless data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[] run tag @s remove compilation_translating
+execute unless data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[] run tag @s remove compilation_grouping
+execute unless data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[] run tag @s remove compilation_controls
+execute unless data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[] run tag @s remove compilation_done
 
 data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[0]
 execute unless data entity @s {Tags:["compilation_special_type"]} if data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:2} run data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.stack prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory
@@ -51,7 +58,14 @@ execute unless data entity @s {Tags:["compilation_special_type"]} if data block 
 execute unless data entity @s {Tags:["compilation_special_type"]} if data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{cmd:24005} if data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp1{type:2,style:2} if data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2{type:2,style:1} run data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_res
 execute unless data entity @s {Tags:["compilation_special_type"]} if data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{cmd:24005} if data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp1{type:2,style:2} if data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2{type:2,style:1} run tag @s add compilation_special_type
 execute unless data entity @s {Tags:["compilation_special_type"]} if data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{cmd:24005} run tag @s add compilation_error
-execute unless data entity @s {Tags:["compilation_special_type"]} if data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{cmd:24005} run data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error set value '[{"text":"Invalid IF style: ", "italic": false, "bold": true, "color": "white"},{"text":"if-then or if-then-else expected", "bold": false, "italic": false, "color": "white"}]'
+execute unless data entity @s {Tags:["compilation_special_type"]} if data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{cmd:24005} run data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error set value '[{"text":"Invalid IF style: ", "italic": false, "bold": true, "color": "white"}]'
+execute unless data entity @s {Tags:["compilation_special_type"]} if data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{cmd:24005} run data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_desc set value '[{"text":"  if-then or if-then-else expected", "bold": false, "italic": false, "color": "white"}]'
+execute unless data entity @s {Tags:["compilation_special_type"]} if data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{cmd:24005} run tag @s remove compilation_merge
+execute unless data entity @s {Tags:["compilation_special_type"]} if data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{cmd:24005} run tag @s remove compilation_parsing
+execute unless data entity @s {Tags:["compilation_special_type"]} if data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{cmd:24005} run tag @s remove compilation_translating
+execute unless data entity @s {Tags:["compilation_special_type"]} if data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{cmd:24005} run tag @s remove compilation_grouping
+execute unless data entity @s {Tags:["compilation_special_type"]} if data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{cmd:24005} run tag @s remove compilation_controls
+execute unless data entity @s {Tags:["compilation_special_type"]} if data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{cmd:24005} run tag @s remove compilation_done
 execute unless data entity @s {Tags:["compilation_special_type"]} run data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp
 execute unless data entity @s {Tags:["compilation_special_type"]} run data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[0]
 
