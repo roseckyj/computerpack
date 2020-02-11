@@ -1,0 +1,13 @@
+{
+	"parent": "item/generated",
+	"textures": {
+		"layer0": "computercraft/storage/diskette"
+	},
+    "display": {
+        "thirdperson_righthand": {
+            "rotation": [ 0, -32, 0 ],
+            "translation": [ 0, -2, -1 ],
+            "scale": [ 0.5, 0.5, 0.5 ]
+        }
+    }
+}

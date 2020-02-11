@@ -1,0 +1,23 @@
+{
+    "parent": "block/orientable",
+    "textures": {
+        "top": "computercraft/printer/top",
+        "bottom": "computercraft/printer/bottom",
+        "front": "computercraft/printer/front",
+        "side": "computercraft/printer/side"
+    },
+    "display": {
+        "head": {
+            "scale": [
+                1.62,
+                1.62,
+                1.62
+            ],
+            "translation": [
+                0,
+                -43.25,
+                0.01
+            ]
+        }
+    }
+}

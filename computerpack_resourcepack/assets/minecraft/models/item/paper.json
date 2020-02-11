@@ -1,0 +1,33 @@
+{
+	"parent": "item/handheld",
+	"textures": {
+		"layer0": "item/paper"
+	},
+	"overrides": [
+		{ "predicate": { "custom_model_data": 24001}, "model": "computercraft/controls/1" },
+		{ "predicate": { "custom_model_data": 24002}, "model": "computercraft/controls/2" },
+		{ "predicate": { "custom_model_data": 24003}, "model": "computercraft/controls/3" },
+		{ "predicate": { "custom_model_data": 24004}, "model": "computercraft/controls/4" },
+		{ "predicate": { "custom_model_data": 24005}, "model": "computercraft/controls/5" },
+		{ "predicate": { "custom_model_data": 24006}, "model": "computercraft/controls/6" },
+		{ "predicate": { "custom_model_data": 24007}, "model": "computercraft/controls/7" },
+		{ "predicate": { "custom_model_data": 24008}, "model": "computercraft/controls/8" },
+		{ "predicate": { "custom_model_data": 24009}, "model": "computercraft/controls/9" },
+		{ "predicate": { "custom_model_data": 24010}, "model": "computercraft/controls/10" },
+		{ "predicate": { "custom_model_data": 24011}, "model": "computercraft/controls/11" },
+		{ "predicate": { "custom_model_data": 24012}, "model": "computercraft/controls/12" },
+		{ "predicate": { "custom_model_data": 24013}, "model": "computercraft/controls/13" },
+		{ "predicate": { "custom_model_data": 24014}, "model": "computercraft/controls/14" },
+		{ "predicate": { "custom_model_data": 24015}, "model": "computercraft/controls/15" },
+		{ "predicate": { "custom_model_data": 24101}, "model": "computercraft/gui/placeholder" },
+		{ "predicate": { "custom_model_data": 24102}, "model": "computercraft/gui/arrow" },
+		{ "predicate": { "custom_model_data": 24103}, "model": "computercraft/gui/paper_hint" },
+		{ "predicate": { "custom_model_data": 24104}, "model": "computercraft/gui/up" },
+		{ "predicate": { "custom_model_data": 24105}, "model": "computercraft/gui/down" },
+		{ "predicate": { "custom_model_data": 24106}, "model": "computercraft/gui/diskette" },
+		{ "predicate": { "custom_model_data": 24107}, "model": "computercraft/gui/black" },
+		{ "predicate": { "custom_model_data": 24108}, "model": "computercraft/gui/arrow_animated" },
+		{ "predicate": { "custom_model_data": 24109}, "model": "computercraft/gui/error" },
+		{ "predicate": { "custom_model_data": 24201}, "model": "computercraft/storage/diskette" }
+	]
+}

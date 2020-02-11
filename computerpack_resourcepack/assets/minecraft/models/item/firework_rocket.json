@@ -1,0 +1,14 @@
+{
+	"parent": "item/handheld",
+	"textures": {
+		"layer0": "item/firework_rocket"
+	},
+	"overrides": [
+		{ "predicate": { "custom_model_data": 24001}, "model": "computercraft/robot" },
+		{ "predicate": { "custom_model_data": 24002}, "model": "computercraft/robot_head" },
+		{ "predicate": { "custom_model_data": 24003}, "model": "computercraft/printer" },
+		{ "predicate": { "custom_model_data": 24004}, "model": "computercraft/assembler" },
+		{ "predicate": { "custom_model_data": 24005}, "model": "computercraft/programmer" },
+		{ "predicate": { "custom_model_data": 24006}, "model": "computercraft/compiler" }
+	]
+}

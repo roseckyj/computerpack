@@ -1,0 +1,23 @@
+{
+    "parent": "block/orientable",
+    "textures": {
+        "top": "computercraft/assembler/top",
+        "bottom": "computercraft/assembler/bottom",
+        "front": "computercraft/assembler/front",
+        "side": "computercraft/assembler/side"
+    },
+    "display": {
+        "head": {
+            "scale": [
+                1.62,
+                1.62,
+                1.62
+            ],
+            "translation": [
+                0,
+                -43.25,
+                0.01
+            ]
+        }
+    }
+}
