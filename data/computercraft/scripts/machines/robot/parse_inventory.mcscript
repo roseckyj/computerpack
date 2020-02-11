@@ -1,0 +1,3 @@
+for(0,26){
+    /execute as @e[tag=CC_Robot_Body] at @s store result score @s slot$(i) run data get entity @s HandItems[0].tag.code.1[$(i)].tag.CustomModelData
+}

@@ -1,0 +1,126 @@
+// Fill in GUI design items
+asat(@e[tag=isCustomBlock,tag=block1]) {
+    for(0,2) {
+        if(!"data block ~ ~ ~ {Items:[{Slot:$(i)b}]}") {
+            /replaceitem block ~ ~ ~ container.$(i) minecraft:paper{CustomModelData:24101,display:{Name:'[{"text":""}]'}} 1
+        }
+    }
+    if(!"data block ~ ~ ~ {Items:[{Slot:9b}]}") {
+        /replaceitem block ~ ~ ~ container.9 minecraft:paper{CustomModelData:24101,display:{Name:'[{"text":""}]'}} 1
+    }
+    /replaceitem block ~ ~ ~ container.11 minecraft:paper{CustomModelData:24102,display:{Name:'[{"text":""}]'}} 1
+    for (1,64) {
+        if ("score @s paper matches $(i)") {
+            /replaceitem block ~ ~ ~ container.11 minecraft:paper{CustomModelData:24102,display:{Name:'[{"text":"Paper stored: ","italic":false},{"text":"$(i)","italic":true}]'}} $(i)
+        }
+    }
+    if ("score @s paper matches 65..") {
+            /replaceitem block ~ ~ ~ container.11 minecraft:paper{CustomModelData:24102,display:{Name:'[{"text":"Paper stored: ","italic":false},{"text":"64+","italic":true}]'}} 64
+        }
+    for(18,20) {
+        if(!"data block ~ ~ ~ {Items:[{Slot:$(i)b}]}") {
+            /replaceitem block ~ ~ ~ container.$(i) minecraft:paper{CustomModelData:24101,display:{Name:'[{"text":""}]'}} 1
+        }
+    }
+}
+
+// Add paper into the machine
+/execute as @e[tag=isCustomBlock,tag=block1] at @s store result score @s temp run data get block ~ ~ ~ Items[{Slot:10b,id:"minecraft:paper"}].Count
+/execute as @e[tag=isCustomBlock,tag=block1] run scoreboard players operation @s paper += @s temp
+
+asat(@e[tag=isCustomBlock,tag=block1]) {
+    if(!'data block ~ ~ ~ {Items:[{Slot:10b,id:"minecraft:paper"}]}') {
+        
+        // Detect taken paper
+        if("score @s paper matches 1..") {
+            for(3,8) {
+                if(!"data block ~ ~ ~ {Items:[{Slot:$(i)b}]}") {
+                    /scoreboard players remove @s paper 1
+                }
+            }
+            for(12,15) {
+                if(!"data block ~ ~ ~ {Items:[{Slot:$(i)b}]}") {
+                    /scoreboard players remove @s paper 1
+                }
+            }
+            for(21,24) {
+                if(!"data block ~ ~ ~ {Items:[{Slot:$(i)b}]}") {
+                    /scoreboard players remove @s paper 1
+                }
+            }
+            for(26,26) {
+                if(!"data block ~ ~ ~ {Items:[{Slot:$(i)b}]}") {
+                    /scoreboard players remove @s paper 1
+                }
+            }
+        }
+    } else {
+        /replaceitem block ~ ~ ~ container.10 minecraft:air 1
+    }
+
+    if("score @s paper matches 1..") {
+        
+        // If machine has paper
+        /tag @s remove empty
+        if (!"data block ~ ~ ~ {Items:[{Slot:3b}]}") {
+            /replaceitem block ~ ~ ~ container.3 minecraft:paper{CustomModelData:24002,display:{Name:'[{"text":"Forward","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
+        }
+        if (!"data block ~ ~ ~ {Items:[{Slot:4b}]}") {
+            /replaceitem block ~ ~ ~ container.4 minecraft:paper{CustomModelData:24009,display:{Name:'[{"text":"Backward","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
+        }
+        if (!"data block ~ ~ ~ {Items:[{Slot:5b}]}") {
+            /replaceitem block ~ ~ ~ container.5 minecraft:paper{CustomModelData:24004,display:{Name:'[{"text":"Left","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
+        }
+        if (!"data block ~ ~ ~ {Items:[{Slot:6b}]}") {
+            /replaceitem block ~ ~ ~ container.6 minecraft:paper{CustomModelData:24003,display:{Name:'[{"text":"Right","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
+        }
+        if (!"data block ~ ~ ~ {Items:[{Slot:7b}]}") {
+            /replaceitem block ~ ~ ~ container.7 minecraft:paper{CustomModelData:24007,display:{Name:'[{"text":"Up","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
+        }
+        if (!"data block ~ ~ ~ {Items:[{Slot:8b}]}") {
+            /replaceitem block ~ ~ ~ container.8 minecraft:paper{CustomModelData:24008,display:{Name:'[{"text":"Down","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
+        }
+        if (!"data block ~ ~ ~ {Items:[{Slot:12b}]}") {
+            /replaceitem block ~ ~ ~ container.12 minecraft:paper{CustomModelData:24006,display:{Name:'[{"text":"Dig","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
+        }
+        if (!"data block ~ ~ ~ {Items:[{Slot:13b}]}") {
+            /replaceitem block ~ ~ ~ container.13 minecraft:paper{CustomModelData:24005,display:{Name:'[{"text":"if","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
+        }
+        if (!"data block ~ ~ ~ {Items:[{Slot:14b}]}") {
+            /replaceitem block ~ ~ ~ container.14 minecraft:paper{CustomModelData:24015,display:{Name:'[{"text":"else","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
+        }
+        if (!"data block ~ ~ ~ {Items:[{Slot:15b}]}") {
+            /replaceitem block ~ ~ ~ container.15 minecraft:paper{CustomModelData:24012,display:{Name:'[{"text":"for","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
+        }
+        if (!"data block ~ ~ ~ {Items:[{Slot:21b}]}") {
+            /replaceitem block ~ ~ ~ container.21 minecraft:paper{CustomModelData:24011,display:{Name:'[{"text":"{","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
+        }
+        if (!"data block ~ ~ ~ {Items:[{Slot:22b}]}") {
+            /replaceitem block ~ ~ ~ container.22 minecraft:paper{CustomModelData:24010,display:{Name:'[{"text":"}","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
+        }
+        if (!"data block ~ ~ ~ {Items:[{Slot:23b}]}") {
+            /replaceitem block ~ ~ ~ container.23 minecraft:paper{CustomModelData:24013,display:{Name:'[{"text":"(","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
+        }
+        if (!"data block ~ ~ ~ {Items:[{Slot:24b}]}") {
+            /replaceitem block ~ ~ ~ container.24 minecraft:paper{CustomModelData:24014,display:{Name:'[{"text":")","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
+        }
+        if (!"data block ~ ~ ~ {Items:[{Slot:26b}]}") {
+            /replaceitem block ~ ~ ~ container.26 minecraft:paper 1
+        }
+    } else {
+
+        // Remove once (to prevent accidential item removal)
+        if (!"data entity @s {Tags:['empty']}") {
+            for(3,8) {
+                /replaceitem block ~ ~ ~ container.$(i) minecraft:air 1
+            }
+            for(12,17) {
+                /replaceitem block ~ ~ ~ container.$(i) minecraft:air 1
+            }
+            for(21,26) {
+                /replaceitem block ~ ~ ~ container.$(i) minecraft:air 1
+            }
+            /tag @s add empty
+        }
+    }
+}

@@ -1,0 +1,98 @@
+asat(@e[tag=isCustomBlock,tag=block3]) {
+    // Detect interaction
+    if (!"data block ~ ~ ~ {Items:[{Slot:8b}]}") {
+        /scoreboard players remove @s scroll 1
+        /tag @s add scroll
+    }
+    if(!"data block ~ ~ ~ {Items:[{Slot:26b}]}") {
+        /scoreboard players add @s scroll 1
+        /tag @s add scroll
+    }
+
+    // Normalize scroll value
+    if ('score @s scroll matches 21..') {
+        /scoreboard players set @s scroll 20
+    }
+    if ('score @s scroll matches 0') {
+        /scoreboard players set @s scroll 1
+    }
+
+    // Save and load
+    if('data block ~ ~ ~ {Items:[{Slot:17b,id:"minecraft:paper",tag:{CustomModelData:24201}}]}') {
+        if('data entity @s {Tags:["empty"]}') {
+            /scoreboard players set @s scroll 1
+            /tag @s add scroll
+        }
+        if('data entity @s {Tags:["scroll"]}') {
+            // Load inventory
+            for (1,20, scrl) {
+                if ('score @s scroll matches $(scrl)') {
+                    /data modify block ~ ~ ~ Items[{Slot:17b}].tag.code.$(scrl) append from block ~ ~ ~ Items[{Slot:17b}]
+                    /data modify block ~ ~ ~ Items set from block ~ ~ ~ Items[{Slot:17b}].tag.code.$(scrl)
+                    /data remove block ~ ~ ~ Items[{Slot:17b}].tag.code.$(scrl)[{Slot:17b}]
+                }
+            }
+        } else {
+            // Save inventory
+            for (1,20, scrl) {
+                if ('score @s scroll matches $(scrl)') {
+                    /data modify block ~ ~ ~ Items[{Slot:17b}].tag.code.$(scrl) set from block ~ ~ ~ Items
+                    /data remove block ~ ~ ~ Items[{Slot:17b}].tag.code.$(scrl)[{Slot:8b}]
+                    /data remove block ~ ~ ~ Items[{Slot:17b}].tag.code.$(scrl)[{Slot:17b}]
+                    /data remove block ~ ~ ~ Items[{Slot:17b}].tag.code.$(scrl)[{Slot:26b}]
+                }
+            }
+        }
+        /tag @s remove empty
+    } else {
+        if(!'data entity @s {Tags:["empty"]}') {
+            for(0,7) {
+                /replaceitem block ~ ~ ~ container.$(i) minecraft:paper{CustomModelData:24101,display:{Name:'[{"text":""}]'}} 1
+            }
+            for(9,16) {
+                /replaceitem block ~ ~ ~ container.$(i) minecraft:paper{CustomModelData:24101,display:{Name:'[{"text":""}]'}} 1
+            }
+            for(18,25) {
+                /replaceitem block ~ ~ ~ container.$(i) minecraft:paper{CustomModelData:24101,display:{Name:'[{"text":""}]'}} 1
+            }
+        } else {
+            for(0,7) {
+                if(!"data block ~ ~ ~ {Items:[{Slot:$(i)b}]}") {
+                    /replaceitem block ~ ~ ~ container.$(i) minecraft:paper{CustomModelData:24101,display:{Name:'[{"text":""}]'}} 1
+                }
+            }
+            for(9,16) {
+                if(!"data block ~ ~ ~ {Items:[{Slot:$(i)b}]}") {
+                    /replaceitem block ~ ~ ~ container.$(i) minecraft:paper{CustomModelData:24101,display:{Name:'[{"text":""}]'}} 1
+                }
+            }
+            for(18,25) {
+                if(!"data block ~ ~ ~ {Items:[{Slot:$(i)b}]}") {
+                    /replaceitem block ~ ~ ~ container.$(i) minecraft:paper{CustomModelData:24101,display:{Name:'[{"text":""}]'}} 1
+                }
+            }
+        }
+        /tag @s add empty
+    }
+
+    /tag @s remove scroll
+
+    // Fill in GUI design items
+    if (!"data block ~ ~ ~ {Items:[{Slot:8b}]}") {
+        for (1,20, scrl) {
+            if ('score @s scroll matches $(scrl)') {
+                /replaceitem block ~ ~ ~ container.8 minecraft:paper{CustomModelData:24104,display:{Name:'[{"text":"Page up", "italic": false}]', Lore:['[{"text":"Current page: $(scrl) of 20", "italic": false}]']}} 1
+            }
+        }
+    }
+    if(!"data block ~ ~ ~ {Items:[{Slot:17b}]}") {
+        /replaceitem block ~ ~ ~ container.17 minecraft:paper{CustomModelData:24106,display:{Name:'[{"text":"Insert storage here"}]'}} 1
+    }
+    if(!"data block ~ ~ ~ {Items:[{Slot:26b}]}") {
+        for (1,20, scrl) {
+            if ('score @s scroll matches $(scrl)') {
+                /replaceitem block ~ ~ ~ container.26 minecraft:paper{CustomModelData:24105,display:{Name:'[{"text":"Page down", "italic": false}]', Lore:['[{"text":"Current page: $(scrl) of 20", "italic": false}]']}} 1
+            }
+        }
+    }
+}

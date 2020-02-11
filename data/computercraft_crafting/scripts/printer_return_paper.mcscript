@@ -1,0 +1,11 @@
+for (0,63) {
+    if ("score @s paper matches $(i)") {
+        /summon minecraft:item ~ ~0.5 ~ {Item:{id:"minecraft:paper",Count:$(i)}}
+        /scoreboard players remove @s paper $(i)
+    }
+}
+if ("score @s paper matches 64..") {
+    /summon minecraft:item ~ ~0.5 ~ {Item:{id:"minecraft:paper",Count:64}}
+    /scoreboard players remove @s paper 64
+    /function computercraft_crafting:printer_return_paper
+}

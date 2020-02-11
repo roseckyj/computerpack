@@ -1,0 +1,7 @@
+/function computercraft:machines/printer
+/function computercraft:machines/assembler
+/function computercraft:machines/programmer
+/function computercraft:machines/compiler/main
+/function computercraft:machines/robot/main
+
+/function computercraft:machines/gui

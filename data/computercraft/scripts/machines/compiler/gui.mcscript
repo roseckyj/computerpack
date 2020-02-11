@@ -1,0 +1,43 @@
+modal status(cmd, c1, c2, c3, c4, c5) {
+    /replaceitem block ~ ~ ~ container.13 minecraft:paper{CustomModelData:$(cmd),display:{Name:'[{"text":"Compiling","italic":false}]', Lore:['[{"text":"- Copy data","color":"$(c1)","italic":false}]','[{"text":"- Merge pages","color":"$(c2)","italic":false}]','[{"text":"- Translate items","color":"$(c3)","italic":false}]','[{"text":"- Group commands","color":"$(c4)","italic":false}]','[{"text":"- Assign control blocks","color":"$(c5)","italic":false}]']}} 1
+}
+
+for(0,10) {
+    if(!"data block ~ ~ ~ {Items:[{Slot:$(i)b}]}") {
+        /replaceitem block ~ ~ ~ container.$(i) minecraft:paper{CustomModelData:24101,display:{Name:'[{"text":""}]'}} 1
+    }
+}
+if(!"data block ~ ~ ~ {Items:[{Slot:12b}]}") {
+    /replaceitem block ~ ~ ~ container.12 minecraft:paper{CustomModelData:24101,display:{Name:'[{"text":""}]'}} 1
+}
+
+if('data entity @s {Tags:["compilation_empty"]}') {
+    /replaceitem block ~ ~ ~ container.13 minecraft:paper{CustomModelData:24102,display:{Name:'[{"text":""}]'}} 1
+}
+if('data entity @s {Tags:["compilation_merge"]}') {
+    status(24108, "dark_green", "yellow", "white", "white", "white")
+}
+if('data entity @s {Tags:["compilation_translating"]}') {
+    status(24108, "dark_green", "dark_green", "yellow", "white", "white")
+}
+if('data entity @s {Tags:["compilation_grouping"]}') {
+    status(24108, "dark_green", "dark_green", "dark_green", "yellow", "white")
+}
+if('data entity @s {Tags:["compilation_controls"]}') {
+    status(24108, "dark_green", "dark_green", "dark_green", "dark_green", "yellow")
+}
+if('data entity @s {Tags:["compilation_done"]}') {
+    status(24102, "dark_green", "dark_green", "dark_green", "dark_green", "dark_green")
+}
+if('data entity @s {Tags:["compilation_error"]}') {
+    /replaceitem block ~ ~ ~ container.13 minecraft:paper{CustomModelData:24109,display:{Name:'[{"text":"Compilation error!", "color":"red", "italic": false}]',Lore:[]}} 1
+}
+
+if(!"data block ~ ~ ~ {Items:[{Slot:14b}]}") {
+    /replaceitem block ~ ~ ~ container.14 minecraft:paper{CustomModelData:24101,display:{Name:'[{"text":""}]'}} 1
+}
+for(16,26) {
+    if(!"data block ~ ~ ~ {Items:[{Slot:$(i)b}]}") {
+        /replaceitem block ~ ~ ~ container.$(i) minecraft:paper{CustomModelData:24101,display:{Name:'[{"text":""}]'}} 1
+    }
+}

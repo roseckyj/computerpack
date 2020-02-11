@@ -1,0 +1,27 @@
+// ------ MAIN -----
+#file: ./main
+main(1, 24003, 'Printer', 'Printer')
+main(2, 24004, '     Assembler', 'Assembler')
+main(3, 24005, 'Programmer', 'Programmer')
+main(4, 24006, '               Compiler', 'Compiler')
+/execute as @e[tag=isCustomBlock] run data merge entity @s {Fire:23000s}
+
+// ------ CREATE -----
+#file: ./create
+create(1, 24003, 'Printer', 'Printer')
+create(2, 24004, '     Assembler', 'Assembler')
+create(3, 24005, 'Programmer', 'Programmer')
+create(4, 24006, '               Compiler', 'Compiler')
+/kill @s
+
+// ------ CREATIONS -----
+creations(1, 24003, 'Printer', 'Printer')
+creations(2, 24004, '     Assembler', 'Assembler')
+creations(3, 24005, 'Programmer', 'Programmer')
+creations(4, 24006, '               Compiler', 'Compiler')
+
+// ------ BREAK -----
+breakPrinter(1, 24003, 'Printer', 'Printer')
+break(2, 24004, '     Assembler', 'Assembler')
+break(3, 24005, 'Programmer', 'Programmer')
+break(4, 24006, '               Compiler', 'Compiler')

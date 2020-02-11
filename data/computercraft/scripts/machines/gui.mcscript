@@ -1,0 +1,3 @@
+for (24101,24110) {
+    /clear @a minecraft:paper{CustomModelData:$(i)}
+}

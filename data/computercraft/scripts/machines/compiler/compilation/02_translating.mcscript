@@ -1,0 +1,16 @@
+#file: ./02
+
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.merged[0]
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write set value {type: 0}
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write.id set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read.id
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write.count set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read.Count
+
+// Translate known commands
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read{id:"minecraft:paper"}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write set value {type: 1}
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write.cmd set value 0
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write.cmd set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read.tag.CustomModelData
+}
+
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.translated append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write
+/data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.merged[0]

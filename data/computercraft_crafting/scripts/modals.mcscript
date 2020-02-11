@@ -1,0 +1,53 @@
+modal main(id, customModelData, blockTitle, itemTitle) {
+    asat(@e[type=firework_rocket,nbt={FireworksItem:{tag:{computercraft_craftingBlock:$(id)}}}]) {
+        if (!"block ~ ~ ~ air") {
+            /execute if block ~0.4 ~ ~ air run tp @s ~0.5 ~ ~
+            /execute if block ~-0.4 ~ ~ air run tp @s ~-0.5 ~ ~
+            /execute if block ~ ~ ~-0.4 air run tp @s ~ ~ ~-0.5
+            /execute if block ~ ~ ~0.4 air run tp @s ~ ~ ~0.5
+            /execute if block ~ ~-0.4 ~ air run tp @s ~ ~-0.5 ~
+            /execute if block ~ ~0.4 ~ air run tp @s ~ ~0.5 ~
+        }
+        /execute align xyz if block ~ ~ ~ air run function computercraft_crafting:create
+    }
+    asat(@e[tag=isCustomBlock,tag=block$(id)]), if("block ~ ~ ~ air") {
+        /function computercraft_crafting:break/$(id)
+    }
+}
+
+modal create(id, customModelData, blockTitle, itemTitle) {
+    /execute as @s[nbt={FireworksItem:{tag:{CustomModelData:$(customModelData)}}}] as @p run function computercraft_crafting:creations/$(id)
+}
+
+modal creations(id, customModelData, blockTitle, itemTitle) {
+    #file: ./creations/$(id)
+    /setblock ~ ~ ~ minecraft:barrel{CustomName:'{"text":"$(blockTitle)"}'}
+
+    /execute if entity @s[y_rotation=-45..44.99] run summon armor_stand ~0.5 ~0.5 ~0.5 {Tags: [isCustomBlock,block$(id),newBlock],CustomName:'{"text":"$(itemTitle)"}',Invisible:1,Marker:1,NoGravity:1,Rotation:[180f,0f]}
+    /execute if entity @s[y_rotation=45..134.99] run summon armor_stand ~0.5 ~0.5 ~0.5 {Tags: [isCustomBlock,block$(id),newBlock],CustomName:'{"text":"$(itemTitle)"}',Invisible:1,Marker:1,NoGravity:1,Rotation:[-90f,0f]}
+    /execute if entity @s[y_rotation=135..-135.01] run summon armor_stand ~0.5 ~0.5 ~0.5 {Tags: [isCustomBlock,block$(id),newBlock],CustomName:'{"text":"$(itemTitle)"}',Invisible:1,Marker:1,NoGravity:1,Rotation:[0f,0f]}
+    /execute if entity @s[y_rotation=-135..-45] run summon armor_stand ~0.5 ~0.5 ~0.5 {Tags: [isCustomBlock,block$(id),newBlock],CustomName:'{"text":"$(itemTitle)"}',Invisible:1,Marker:1,NoGravity:1,Rotation:[90f,0f]}
+
+    as(@e[tag=block$(id),tag=newBlock]) {
+        /replaceitem entity @s armor.head minecraft:firework_rocket{CustomModelData:$(customModelData)}
+        /data merge entity @s {Fire:23000s}
+        /tag @s remove newBlock
+    }
+}
+
+modal break(id, customModelData, blockTitle, itemTitle) {
+    #file: ./break/$(id)
+    for(24101,24110) {
+        /kill @e[type=item,distance=..0.8,nbt={Item:{tag:{CustomModelData:$(i)}}}]
+    }
+    /summon minecraft:item ~ ~0.5 ~ {Item:{id:"minecraft:firework_rocket",Count:1,tag:{CustomModelData:$(customModelData),display:{Name:"[{\"text\":\"$(itemTitle)\",\"italic\":false}]"},computercraft_craftingBlock:$(id),Fireworks:{}}}}
+    /kill @s
+}
+
+modal breakPrinter(id, customModelData, blockTitle, itemTitle) {
+    #file: ./break/$(id)
+    /kill @e[type=item,distance=..0.8]
+    /function computercraft_crafting:printer_return_paper
+    /summon minecraft:item ~ ~0.5 ~ {Item:{id:"minecraft:firework_rocket",Count:1,tag:{CustomModelData:$(customModelData),display:{Name:"[{\"text\":\"$(itemTitle)\",\"italic\":false}]"},computercraft_craftingBlock:$(id),Fireworks:{}}}}
+    /kill @s
+}

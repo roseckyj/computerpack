@@ -1,0 +1,103 @@
+modal remove_all_tags() {
+    /tag @s remove compilation_merge
+    /tag @s remove compilation_parsing
+    /tag @s remove compilation_translating
+    /tag @s remove compilation_grouping
+    /tag @s remove compilation_controls
+    /tag @s remove compilation_done
+}
+
+asat(@e[tag=isCustomBlock,tag=block4]) {
+    
+    // Fill in GUI design items
+    /function computercraft:machines/compiler/gui
+
+    if('data block ~ ~ ~ {Items:[{Slot:11b,id:"minecraft:paper",tag:{CustomModelData:24201}}]}') {
+ 
+        // When inserted storage
+        if('data entity @s {Tags:["compilation_empty"]}') {
+            /function computercraft:machines/compiler/compilation/00
+
+            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error set value ""
+            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.merged set value []
+
+            /tag @s add compilation_merge
+            /tag @s remove compilation_empty
+        }
+
+        // Merging
+        if('data entity @s {Tags:["compilation_merge"]}') {
+            /function computercraft:machines/compiler/compilation/01
+        }
+
+        // When merging finished
+        if('data entity @s {Tags:["compilation_merge"]} unless data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.source[]') {
+            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.translated set value []
+            
+            /tag @s add compilation_translating
+            /tag @s remove compilation_merge
+        }
+
+        // Translating
+        if('data entity @s {Tags:["compilation_translating"]}') {
+            /function computercraft:machines/compiler/compilation/02
+        }
+
+        // When translation finished
+        if('data entity @s {Tags:["compilation_translating"]} unless data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.merged[]') {
+            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped set value {stack:[],main:[]}
+            
+            /tag @s add compilation_grouping
+            /tag @s remove compilation_translating
+        }
+
+        // Grouping
+        if('data entity @s {Tags:["compilation_grouping"]}') {
+            /function computercraft:machines/compiler/compilation/03
+        }
+
+        // When translation finished
+        if('data entity @s {Tags:["compilation_grouping"]} unless data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.translated[]') {
+            if ('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped.stack[]') {
+                compilation_error("Brackets mismatch", "missing closing bracket")
+            }
+
+            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls set value {memory:{src:[],res:[]},stack:[]}
+            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped.main
+            
+            /tag @s add compilation_controls
+            /tag @s remove compilation_grouping
+        }
+
+        // Control blocks assigning
+        if('data entity @s {Tags:["compilation_controls"]}') {
+            /function computercraft:machines/compiler/compilation/04
+        }
+
+        // When assigning finished
+        if('data entity @s {Tags:["compilation_controls"]} unless data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[] unless data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.stack[]') {
+            
+            /tag @s add compilation_done
+            /tag @s remove compilation_controls
+        }
+
+        // --------------- Compilation error ------------------
+        if('data entity @s {Tags:["compilation_error"]}') {          
+            remove_all_tags()
+
+            /data modify block ~ ~ ~ Items[{Slot:13b}].tag.display.Lore prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error
+        }
+
+        // --------------- Compilation done ------------------
+        if('data entity @s {Tags:["compilation_done"]}') {          
+            /data modify block ~ ~ ~ Items[{Slot:11b}].Slot set value 15b
+        }
+
+    } else {
+        // When no storage inserted
+        remove_all_tags()
+
+        /tag @s remove compilation_error
+        /tag @s add compilation_empty
+    }
+}

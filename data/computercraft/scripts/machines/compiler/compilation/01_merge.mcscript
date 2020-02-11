@@ -1,0 +1,8 @@
+#file: ./01
+
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.source[0][]') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.merged append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.source[0][0]
+    /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.source[0][0]
+} else {
+    /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.source[0]
+}

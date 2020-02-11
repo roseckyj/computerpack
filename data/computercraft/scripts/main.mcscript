@@ -1,0 +1,12 @@
+#file: ./main
+// here goes your main content
+// executes 20 times a second
+
+/scoreboard players add CC gameTicks 1
+/scoreboard players operation CC gameTicks %= CC ticksPerCommand
+
+// Detect crafting
+/function computercraft:crafting
+
+// Machines
+/function computercraft:machines/main

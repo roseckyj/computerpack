@@ -1,0 +1,42 @@
+#file: ./03
+
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.translated[0]
+
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{cmd:24011}') {
+    // {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped.main prepend value {type: 2, style: 1, children: []}
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped.stack prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped.main
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped.main set value []
+
+} else if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{cmd:24014}') {
+    // (
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped.main prepend value {type: 2, style: 2, children: []}
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped.stack prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped.main
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped.main set value []
+
+} else if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{cmd:24010}') {
+    // }
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2 set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped.stack[0][0]
+    if(!'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2{style:1}') {
+        compilation_error("Brackets mismatch", "`)` expected, but `}` found")
+    }
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped.stack[0][0].children set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped.main
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped.main set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped.stack[0]
+    /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped.stack[0]
+
+} else if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{cmd:24013}') {
+    // )
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2 set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped.stack[0][0]
+    if(!'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2{style:2}') {
+        compilation_error("Brackets mismatch", "`}` expected, but `)` found")
+    }
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped.stack[0][0].children set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped.main
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped.main set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped.stack[0]
+    /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped.stack[0]
+
+} else {
+    // Standard command
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped.main prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp
+}
+
+/data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.translated[0]

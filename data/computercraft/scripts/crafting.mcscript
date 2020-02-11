@@ -1,0 +1,7 @@
+// Detect assembler
+/execute as @a[nbt={Inventory:[{id:"minecraft:knowledge_book"}]}] run tag @s add CC_CraftBlock
+asat(@a[tag=CC_CraftBlock]){
+  /clear @s knowledge_book 1
+  /give @s minecraft:firework_rocket{CustomModelData:24004,computercraft_craftingBlock:2,display:{Name:"[{\"text\":\"Assembler\",\"italic\":false}]"}} 1
+  /tag @s remove CC_CraftBlock
+}

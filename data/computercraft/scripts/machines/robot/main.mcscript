@@ -1,0 +1,40 @@
+modal robotSummon(rotation) {
+  /summon minecraft:armor_stand ~0.5 ~-1.3 ~0.5 {Tags:["CC_Robot_Body"],Invisible:1b,Invulnerable:1b,PersistenceRequired:1b,NoBasePlate:1b,NoGravity:1b,ShowArms:1b,ArmorItems:[{},{},{},{id:"minecraft:firework_rocket",Count:1,tag:{CustomModelData:24002}}],HandItems:[{},{id:"minecraft:iron_pickaxe",Count:1,tag:{CustomModelData:24001,CC_Give_Robot:1b}}],CustomName:'["",{"text":"Robot","italic":true}]',CustomNameVisible:0,DisabledSlots:1973790,Pose:{LeftArm:[180f,180f,0f],RightArm:[180f,0f,32f]},Rotation:[$(rotation)f,0f]}
+}
+
+// Detect newly summoned robots
+asat(@e[type=minecraft:firework_rocket,nbt={FireworksItem:{tag:{CC_Summon_Robot:1b}}}]) {
+  as(@p), align(xyz) {
+    // Duplicated, just for rotation
+    if ("entity @s[y_rotation=-45..44.99]") {
+      robotSummon(0)
+    }
+    if ("entity @s[y_rotation=45..134.99]") {
+      robotSummon(90)
+    }
+    if ("entity @s[y_rotation=135..-135.01]") {
+      robotSummon(180)
+    }
+    if ("entity @s[y_rotation=-135..-45]") {
+      robotSummon(270)
+    }
+  }
+  /execute as @e[tag=CC_Robot_Body] unless score @s robotId matches 1.. run scoreboard players operation @s robotId = CC currentRobotId
+  /scoreboard players add CC currentRobotId 1
+  /kill @s
+
+}
+
+// Detect picked up robots
+as(@e[tag=CC_Robot_Body]), if(!'data entity @s {HandItems:[{id:"minecraft:iron_pickaxe"}]}') {
+    /kill @s
+}
+/execute as @a[nbt={Inventory:[{tag:{CC_Give_Robot:1b}}]}] run tag @s add CC_Give_Robot
+asat(@a[tag=CC_Give_Robot]){
+  /clear @s minecraft:iron_pickaxe{CC_Give_Robot:1b}
+  /give @s minecraft:firework_rocket{CustomModelData:24001,CC_Summon_Robot:1b,display:{Name:"[{\"text\":\"Robot\",\"italic\":false}]"}} 1
+  /tag @s remove CC_Give_Robot
+}
+
+// Run commands
+/execute if score CC gameTicks matches 0 run function computercraft:machines/robot/tick
