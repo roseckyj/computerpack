@@ -1,27 +1,31 @@
 // ------ MAIN -----
 #file: ./main
-main(1, 24003, 'Printer', 'Printer')
-main(2, 24004, '     Assembler', 'Assembler')
-main(3, 24005, 'Programmer', 'Programmer')
-main(4, 24006, '               Compiler', 'Compiler')
+main(1, 24003, 'Printer', "minecraft:barrel{CustomName:'{\"text\":\"Printer\"}'}")
+main(2, 24004, 'Assembler', "minecraft:barrel{CustomName:'{\"text\":\"     Assembler\"}'}")
+main(3, 24005, 'Programmer', "minecraft:barrel{CustomName:'{\"text\":\"Programmer\"}'}")
+main(4, 24006, 'Compiler', "minecraft:barrel{CustomName:'{\"text\":\"               Compiler\"}'}")
+main(5, 24007, 'Wireless link', "minecraft:player_head")
 /execute as @e[tag=isCustomBlock] run data merge entity @s {Fire:23000s}
 
 // ------ CREATE -----
 #file: ./create
-create(1, 24003, 'Printer', 'Printer')
-create(2, 24004, '     Assembler', 'Assembler')
-create(3, 24005, 'Programmer', 'Programmer')
-create(4, 24006, '               Compiler', 'Compiler')
+create(1, 24003, 'Printer', "minecraft:barrel{CustomName:'{\"text\":\"Printer\"}'}")
+create(2, 24004, 'Assembler', "minecraft:barrel{CustomName:'{\"text\":\"     Assembler\"}'}")
+create(3, 24005, 'Programmer', "minecraft:barrel{CustomName:'{\"text\":\"Programmer\"}'}")
+create(4, 24006, 'Compiler', "minecraft:barrel{CustomName:'{\"text\":\"               Compiler\"}'}")
+create(5, 24007, 'Wireless link', "minecraft:player_head")
 /kill @s
 
 // ------ CREATIONS -----
-creations(1, 24003, 'Printer', 'Printer')
-creations(2, 24004, '     Assembler', 'Assembler')
-creations(3, 24005, 'Programmer', 'Programmer')
-creations(4, 24006, '               Compiler', 'Compiler')
+creations(1, 24003, 'Printer', "minecraft:barrel{CustomName:'{\"text\":\"Printer\"}'}")
+creations(2, 24004, 'Assembler', "minecraft:barrel{CustomName:'{\"text\":\"     Assembler\"}'}")
+creations(3, 24005, 'Programmer', "minecraft:barrel{CustomName:'{\"text\":\"Programmer\"}'}")
+creations(4, 24006, 'Compiler', "minecraft:barrel{CustomName:'{\"text\":\"               Compiler\"}'}")
+creations(5, 24007, 'Wireless link', "minecraft:player_head")
 
 // ------ BREAK -----
-breakPrinter(1, 24003, 'Printer', 'Printer')
-break(2, 24004, '     Assembler', 'Assembler')
-break(3, 24005, 'Programmer', 'Programmer')
-break(4, 24006, '               Compiler', 'Compiler')
+breakPrinter(1, 24003, 'Printer', "minecraft:barrel{CustomName:'{\"text\":\"Printer\"}'}")
+break(2, 24004, 'Assembler', "minecraft:barrel{CustomName:'{\"text\":\"     Assembler\"}'}")
+break(3, 24005, 'Programmer', "minecraft:barrel{CustomName:'{\"text\":\"Programmer\"}'}")
+break(4, 24006, 'Compiler', "minecraft:barrel{CustomName:'{\"text\":\"               Compiler\"}'}")
+break(5, 24007, 'Wireless link', "minecraft:player_head")

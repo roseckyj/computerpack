@@ -13,4 +13,14 @@ clear @a minecraft:paper{CustomModelData:24106}
 clear @a minecraft:paper{CustomModelData:24107}
 clear @a minecraft:paper{CustomModelData:24108}
 clear @a minecraft:paper{CustomModelData:24109}
-clear @a minecraft:paper{CustomModelData:24110}
+clear @a minecraft:paper{CustomModelData:24110}
+clear @a minecraft:paper{CustomModelData:24111}
+clear @a minecraft:paper{CustomModelData:24112}
+clear @a minecraft:paper{CustomModelData:24113}
+clear @a minecraft:paper{CustomModelData:24114}
+clear @a minecraft:paper{CustomModelData:24115}
+clear @a minecraft:paper{CustomModelData:24116}
+clear @a minecraft:paper{CustomModelData:24117}
+clear @a minecraft:paper{CustomModelData:24118}
+clear @a minecraft:paper{CustomModelData:24119}
+clear @a minecraft:paper{CustomModelData:24120}

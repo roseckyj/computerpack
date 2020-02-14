@@ -9,6 +9,7 @@
 		{ "predicate": { "custom_model_data": 24003}, "model": "computercraft/printer" },
 		{ "predicate": { "custom_model_data": 24004}, "model": "computercraft/assembler" },
 		{ "predicate": { "custom_model_data": 24005}, "model": "computercraft/programmer" },
-		{ "predicate": { "custom_model_data": 24006}, "model": "computercraft/compiler" }
+		{ "predicate": { "custom_model_data": 24006}, "model": "computercraft/compiler" },
+		{ "predicate": { "custom_model_data": 24007}, "model": "computercraft/wireless_link" }
 	]
 }

@@ -18,3 +18,4 @@ execute as @a[tag=CC_Give_Robot] at @s run clear @s minecraft:iron_pickaxe{CC_Gi
 execute as @a[tag=CC_Give_Robot] at @s run give @s minecraft:firework_rocket{CustomModelData:24001,CC_Summon_Robot:1b,display:{Name:"[{\"text\":\"Robot\",\"italic\":false}]"}} 1
 execute as @a[tag=CC_Give_Robot] at @s run tag @s remove CC_Give_Robot
 execute as @e[tag=CC_Robot_Body] at @s if score CC gameTicks matches 0 run function computercraft:machines/robot/tick
+execute as @e[tag=CC_Robot_Body] at @s run tp @e[distance=0..2.5,type=item] @e[tag=block5,limit=1,sort=nearest]

@@ -36,4 +36,12 @@ execute as @e[type=firework_rocket,nbt={FireworksItem:{tag:{computercraft_crafti
 execute as @e[type=firework_rocket,nbt={FireworksItem:{tag:{computercraft_craftingBlock:4}}}] at @s unless block ~ ~ ~ air if block ~ ~0.4 ~ air run tp @s ~ ~0.5 ~
 execute as @e[type=firework_rocket,nbt={FireworksItem:{tag:{computercraft_craftingBlock:4}}}] at @s align xyz if block ~ ~ ~ air run function computercraft_crafting:create
 execute as @e[tag=isCustomBlock,tag=block4] at @s if block ~ ~ ~ air run function computercraft_crafting:break/4
+execute as @e[type=firework_rocket,nbt={FireworksItem:{tag:{computercraft_craftingBlock:5}}}] at @s unless block ~ ~ ~ air if block ~0.4 ~ ~ air run tp @s ~0.5 ~ ~
+execute as @e[type=firework_rocket,nbt={FireworksItem:{tag:{computercraft_craftingBlock:5}}}] at @s unless block ~ ~ ~ air if block ~-0.4 ~ ~ air run tp @s ~-0.5 ~ ~
+execute as @e[type=firework_rocket,nbt={FireworksItem:{tag:{computercraft_craftingBlock:5}}}] at @s unless block ~ ~ ~ air if block ~ ~ ~-0.4 air run tp @s ~ ~ ~-0.5
+execute as @e[type=firework_rocket,nbt={FireworksItem:{tag:{computercraft_craftingBlock:5}}}] at @s unless block ~ ~ ~ air if block ~ ~ ~0.4 air run tp @s ~ ~ ~0.5
+execute as @e[type=firework_rocket,nbt={FireworksItem:{tag:{computercraft_craftingBlock:5}}}] at @s unless block ~ ~ ~ air if block ~ ~-0.4 ~ air run tp @s ~ ~-0.5 ~
+execute as @e[type=firework_rocket,nbt={FireworksItem:{tag:{computercraft_craftingBlock:5}}}] at @s unless block ~ ~ ~ air if block ~ ~0.4 ~ air run tp @s ~ ~0.5 ~
+execute as @e[type=firework_rocket,nbt={FireworksItem:{tag:{computercraft_craftingBlock:5}}}] at @s align xyz if block ~ ~ ~ air run function computercraft_crafting:create
+execute as @e[tag=isCustomBlock,tag=block5] at @s if block ~ ~ ~ air run function computercraft_crafting:break/5
 execute as @e[tag=isCustomBlock] run data merge entity @s {Fire:23000s}

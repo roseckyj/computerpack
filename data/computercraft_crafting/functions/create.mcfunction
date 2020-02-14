@@ -8,4 +8,5 @@ execute as @s[nbt={FireworksItem:{tag:{CustomModelData:24003}}}] as @p run funct
 execute as @s[nbt={FireworksItem:{tag:{CustomModelData:24004}}}] as @p run function computercraft_crafting:creations/2
 execute as @s[nbt={FireworksItem:{tag:{CustomModelData:24005}}}] as @p run function computercraft_crafting:creations/3
 execute as @s[nbt={FireworksItem:{tag:{CustomModelData:24006}}}] as @p run function computercraft_crafting:creations/4
+execute as @s[nbt={FireworksItem:{tag:{CustomModelData:24007}}}] as @p run function computercraft_crafting:creations/5
 kill @s

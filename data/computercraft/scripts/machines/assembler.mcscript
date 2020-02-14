@@ -95,6 +95,25 @@ asat(@e[tag=isCustomBlock,tag=block2]) {
       /scoreboard players set @s recipe 11
     }
 
+    // Recipe: Programmer (position independent)
+    if('data block ~ ~ ~ {Items:[{Slot:2b,Count:1b,id:"minecraft:redstone"},{Slot:10b,Count:1b,id:"minecraft:iron_ingot"},{Slot:11b,Count:1b,id:"minecraft:chest"},{Slot:12b,Count:1b,id:"minecraft:iron_ingot"}]}') {
+      /scoreboard players set @s recipe 12
+    }
+    if('data block ~ ~ ~ {Items:[{Slot:11b,Count:1b,id:"minecraft:redstone"},{Slot:19b,Count:1b,id:"minecraft:iron_ingot"},{Slot:20b,Count:1b,id:"minecraft:chest"},{Slot:21b,Count:1b,id:"minecraft:iron_ingot"}]}') {
+      /scoreboard players set @s recipe 13
+    }
+
+    // Recipe: Wireless link (position independent)
+    if('data block ~ ~ ~ {Items:[{Slot:1b,Count:1b,id:"minecraft:redstone_torch"},{Slot:10b,Count:1b,id:"minecraft:hopper"},{Slot:19b,Count:1b,id:"minecraft:chest"}]}') {
+      /scoreboard players set @s recipe 14
+    }
+    if('data block ~ ~ ~ {Items:[{Slot:2b,Count:1b,id:"minecraft:redstone_torch"},{Slot:11b,Count:1b,id:"minecraft:hopper"},{Slot:20b,Count:1b,id:"minecraft:chest"}]}') {
+      /scoreboard players set @s recipe 15
+    }
+    if('data block ~ ~ ~ {Items:[{Slot:3b,Count:1b,id:"minecraft:redstone_torch"},{Slot:12b,Count:1b,id:"minecraft:hopper"},{Slot:21b,Count:1b,id:"minecraft:chest"}]}') {
+      /scoreboard players set @s recipe 16
+    }
+
   // Display crafted item
   if ('score @s recipe matches 1..3') {
     /replaceitem block ~ ~ ~ container.15 minecraft:firework_rocket{CustomModelData:24001,CC_Summon_Robot:1b,display:{Name:"[{\"text\":\"Robot\",\"italic\":false}]"}} 1
@@ -109,7 +128,13 @@ asat(@e[tag=isCustomBlock,tag=block2]) {
     /replaceitem block ~ ~ ~ container.15 minecraft:paper{CustomModelData:24201,display:{Name:"[{\"text\":\"Floppy disk\",\"italic\":false}]"}} 1
   }
   if ('score @s recipe matches 10..11') {
-    /replaceitem block ~ ~ ~ container.15 minecraft:firework_rocket{CustomModelData:24006,display:{Name:"[{\"text\":\"Compiler\",\"italic\":false}]"},computercraft_craftingBlock:2,Fireworks:{}} 1
+    /replaceitem block ~ ~ ~ container.15 minecraft:firework_rocket{CustomModelData:24006,display:{Name:"[{\"text\":\"Compiler\",\"italic\":false}]"},computercraft_craftingBlock:4,Fireworks:{}} 1
+  }
+  if ('score @s recipe matches 12..13') {
+    /replaceitem block ~ ~ ~ container.15 minecraft:firework_rocket{CustomModelData:24005,display:{Name:"[{\"text\":\"Programmer\",\"italic\":false}]"},computercraft_craftingBlock:3,Fireworks:{}} 1
+  }
+  if ('score @s recipe matches 14..16') {
+    /replaceitem block ~ ~ ~ container.15 minecraft:firework_rocket{CustomModelData:24007,display:{Name:"[{\"text\":\"Wireless link\",\"italic\":false}]"},computercraft_craftingBlock:5,Fireworks:{}} 1
   }
 
   if ('score @s recipe matches 0') {

@@ -23,10 +23,30 @@
 /execute if block ~1 ~2 ~ air if score @s currentRotation matches 270 run tp @s ~-1 ~ ~
 
 #file: ./mine
-/execute if score @s currentRotation matches 0 run setblock ~ ~2 ~1 minecraft:air destroy
-/execute if score @s currentRotation matches 90 run setblock ~-1 ~2 ~ minecraft:air destroy
-/execute if score @s currentRotation matches 180 run setblock ~ ~2 ~-1 minecraft:air destroy
-/execute if score @s currentRotation matches 270 run setblock ~1 ~2 ~ minecraft:air destroy
+modal destroy(coords) {
+    if (!'block $(coords) minecraft:bedrock' && !'block $(coords) minecraft:end_portal' && !'block $(coords) minecraft:end_portal_frame') {
+        /setblock $(coords) minecraft:air destroy
+    }
+}
+
+if ('score @s currentRotation matches 0') {
+    destroy('~ ~2 ~1')
+}
+if ('score @s currentRotation matches 90') {
+    destroy('~-1 ~2 ~')
+}
+if ('score @s currentRotation matches 180') {
+    destroy('~ ~2 ~-1')
+}
+if ('score @s currentRotation matches 270') {
+    destroy('~1 ~2 ~')
+}
+
+#file: ./mine_up
+destroy('~ ~3 ~0')
+
+#file: ./mine_down
+destroy('~ ~1 ~0')
 
 #file: ./hit
 /execute if score @s currentRotation matches 0 positioned ~ ~2 ~1 as @e[distance=0..1.2,sort=nearest,limit=1,type=!minecraft:armor_stand] run function computercraft:common/damage

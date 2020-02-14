@@ -15,4 +15,4 @@ kill @e[type=item,distance=..0.8,nbt={Item:{tag:{CustomModelData:24108}}}]
 kill @e[type=item,distance=..0.8,nbt={Item:{tag:{CustomModelData:24109}}}]
 kill @e[type=item,distance=..0.8,nbt={Item:{tag:{CustomModelData:24110}}}]
 summon minecraft:item ~ ~0.5 ~ {Item:{id:"minecraft:firework_rocket",Count:1,tag:{CustomModelData:24006,display:{Name:"[{\"text\":\"Compiler\",\"italic\":false}]"},computercraft_craftingBlock:4,Fireworks:{}}}}
-kill @s
+kill @s

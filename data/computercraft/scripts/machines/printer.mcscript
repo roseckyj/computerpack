@@ -1,13 +1,23 @@
 // Fill in GUI design items
 asat(@e[tag=isCustomBlock,tag=block1]) {
+    // Blank gray pieces
     for(0,2) {
         if(!"data block ~ ~ ~ {Items:[{Slot:$(i)b}]}") {
             /replaceitem block ~ ~ ~ container.$(i) minecraft:paper{CustomModelData:24101,display:{Name:'[{"text":""}]'}} 1
         }
     }
-    if(!"data block ~ ~ ~ {Items:[{Slot:9b}]}") {
-        /replaceitem block ~ ~ ~ container.9 minecraft:paper{CustomModelData:24101,display:{Name:'[{"text":""}]'}} 1
+    for (9,9) {
+        if(!"data block ~ ~ ~ {Items:[{Slot:$(i)b}]}") {
+            /replaceitem block ~ ~ ~ container.$(i) minecraft:paper{CustomModelData:24101,display:{Name:'[{"text":""}]'}} 1
+        }
     }
+    for(17,20) {
+        if(!"data block ~ ~ ~ {Items:[{Slot:$(i)b}]}") {
+            /replaceitem block ~ ~ ~ container.$(i) minecraft:paper{CustomModelData:24101,display:{Name:'[{"text":""}]'}} 1
+        }
+    }
+
+    // Arrow showing stored paper
     /replaceitem block ~ ~ ~ container.11 minecraft:paper{CustomModelData:24102,display:{Name:'[{"text":""}]'}} 1
     for (1,64) {
         if ("score @s paper matches $(i)") {
@@ -15,112 +25,183 @@ asat(@e[tag=isCustomBlock,tag=block1]) {
         }
     }
     if ("score @s paper matches 65..") {
-            /replaceitem block ~ ~ ~ container.11 minecraft:paper{CustomModelData:24102,display:{Name:'[{"text":"Paper stored: ","italic":false},{"text":"64+","italic":true}]'}} 64
-        }
-    for(18,20) {
-        if(!"data block ~ ~ ~ {Items:[{Slot:$(i)b}]}") {
-            /replaceitem block ~ ~ ~ container.$(i) minecraft:paper{CustomModelData:24101,display:{Name:'[{"text":""}]'}} 1
-        }
+        /replaceitem block ~ ~ ~ container.11 minecraft:paper{CustomModelData:24102,display:{Name:'[{"text":"Paper stored: ","italic":false},{"text":"64+","italic":true}]'}} 64
     }
-}
 
-// Add paper into the machine
-/execute as @e[tag=isCustomBlock,tag=block1] at @s store result score @s temp run data get block ~ ~ ~ Items[{Slot:10b,id:"minecraft:paper"}].Count
-/execute as @e[tag=isCustomBlock,tag=block1] run scoreboard players operation @s paper += @s temp
+    // scroll up/down arrows
+    if(!"data block ~ ~ ~ {Items:[{Slot:8b}]}") {
+        // detect scroll up
+        /scoreboard players remove @s scroll 1
+        /replaceitem block ~ ~ ~ container.8 minecraft:paper{CustomModelData:24104,display:{Name:'[{"text":"Page up", "italic": false}]'}} 1
+    }
+    if(!"data block ~ ~ ~ {Items:[{Slot:26b}]}") {
+        // detect scroll down
+        /scoreboard players add @s scroll 1
+        /replaceitem block ~ ~ ~ container.26 minecraft:paper{CustomModelData:24105,display:{Name:'[{"text":"Page down", "italic": false}]'}} 1
+    }
+    
+    // Normalize scroll value
+    if ('score @s scroll matches 8..') {
+        /scoreboard players set @s scroll 7
+    }
+    if ('score @s scroll matches 0') {
+        /scoreboard players set @s scroll 1
+    }
 
-asat(@e[tag=isCustomBlock,tag=block1]) {
-    if(!'data block ~ ~ ~ {Items:[{Slot:10b,id:"minecraft:paper"}]}') {
-        
-        // Detect taken paper
-        if("score @s paper matches 1..") {
-            for(3,8) {
-                if(!"data block ~ ~ ~ {Items:[{Slot:$(i)b}]}") {
-                    /scoreboard players remove @s paper 1
-                }
-            }
-            for(12,15) {
-                if(!"data block ~ ~ ~ {Items:[{Slot:$(i)b}]}") {
-                    /scoreboard players remove @s paper 1
-                }
-            }
-            for(21,24) {
-                if(!"data block ~ ~ ~ {Items:[{Slot:$(i)b}]}") {
-                    /scoreboard players remove @s paper 1
-                }
-            }
-            for(26,26) {
-                if(!"data block ~ ~ ~ {Items:[{Slot:$(i)b}]}") {
-                    /scoreboard players remove @s paper 1
-                }
-            }
-        }
-    } else {
+    // Add paper into the machine
+    /execute store result score @s temp run data get block ~ ~ ~ Items[{Slot:10b,id:"minecraft:paper"}].Count
+    /scoreboard players operation @s paper += @s temp
+    if('data block ~ ~ ~ {Items:[{Slot:10b,id:"minecraft:paper"}]}') {
         /replaceitem block ~ ~ ~ container.10 minecraft:air 1
     }
 
+    // Detect taken paper
     if("score @s paper matches 1..") {
-        
-        // If machine has paper
-        /tag @s remove empty
-        if (!"data block ~ ~ ~ {Items:[{Slot:3b}]}") {
-            /replaceitem block ~ ~ ~ container.3 minecraft:paper{CustomModelData:24002,display:{Name:'[{"text":"Forward","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
+        for(3,7) {
+            if(!"data block ~ ~ ~ {Items:[{Slot:$(i)b}]}") {
+                /scoreboard players remove @s paper 1
+            }
         }
-        if (!"data block ~ ~ ~ {Items:[{Slot:4b}]}") {
-            /replaceitem block ~ ~ ~ container.4 minecraft:paper{CustomModelData:24009,display:{Name:'[{"text":"Backward","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
+        for(12,16) {
+            if(!"data block ~ ~ ~ {Items:[{Slot:$(i)b}]}") {
+                /scoreboard players remove @s paper 1
+            }
         }
-        if (!"data block ~ ~ ~ {Items:[{Slot:5b}]}") {
-            /replaceitem block ~ ~ ~ container.5 minecraft:paper{CustomModelData:24004,display:{Name:'[{"text":"Left","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
+        for(21,25) {
+            if(!"data block ~ ~ ~ {Items:[{Slot:$(i)b}]}") {
+                /scoreboard players remove @s paper 1
+            }
         }
-        if (!"data block ~ ~ ~ {Items:[{Slot:6b}]}") {
-            /replaceitem block ~ ~ ~ container.6 minecraft:paper{CustomModelData:24003,display:{Name:'[{"text":"Right","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
-        }
-        if (!"data block ~ ~ ~ {Items:[{Slot:7b}]}") {
-            /replaceitem block ~ ~ ~ container.7 minecraft:paper{CustomModelData:24007,display:{Name:'[{"text":"Up","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
-        }
-        if (!"data block ~ ~ ~ {Items:[{Slot:8b}]}") {
-            /replaceitem block ~ ~ ~ container.8 minecraft:paper{CustomModelData:24008,display:{Name:'[{"text":"Down","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
-        }
-        if (!"data block ~ ~ ~ {Items:[{Slot:12b}]}") {
-            /replaceitem block ~ ~ ~ container.12 minecraft:paper{CustomModelData:24006,display:{Name:'[{"text":"Dig","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
-        }
-        if (!"data block ~ ~ ~ {Items:[{Slot:13b}]}") {
-            /replaceitem block ~ ~ ~ container.13 minecraft:paper{CustomModelData:24005,display:{Name:'[{"text":"if","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
-        }
-        if (!"data block ~ ~ ~ {Items:[{Slot:14b}]}") {
-            /replaceitem block ~ ~ ~ container.14 minecraft:paper{CustomModelData:24015,display:{Name:'[{"text":"else","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
-        }
-        if (!"data block ~ ~ ~ {Items:[{Slot:15b}]}") {
-            /replaceitem block ~ ~ ~ container.15 minecraft:paper{CustomModelData:24012,display:{Name:'[{"text":"for","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
-        }
-        if (!"data block ~ ~ ~ {Items:[{Slot:21b}]}") {
-            /replaceitem block ~ ~ ~ container.21 minecraft:paper{CustomModelData:24011,display:{Name:'[{"text":"{","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
-        }
-        if (!"data block ~ ~ ~ {Items:[{Slot:22b}]}") {
-            /replaceitem block ~ ~ ~ container.22 minecraft:paper{CustomModelData:24010,display:{Name:'[{"text":"}","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
-        }
-        if (!"data block ~ ~ ~ {Items:[{Slot:23b}]}") {
-            /replaceitem block ~ ~ ~ container.23 minecraft:paper{CustomModelData:24013,display:{Name:'[{"text":"(","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
-        }
-        if (!"data block ~ ~ ~ {Items:[{Slot:24b}]}") {
-            /replaceitem block ~ ~ ~ container.24 minecraft:paper{CustomModelData:24014,display:{Name:'[{"text":")","italic":false}]',Lore:['[{"text":"ComputerCraft Command","italic":false}]']}} 1
-        }
-        if (!"data block ~ ~ ~ {Items:[{Slot:26b}]}") {
-            /replaceitem block ~ ~ ~ container.26 minecraft:paper 1
-        }
-    } else {
+    }
 
-        // Remove once (to prevent accidential item removal)
-        if (!"data entity @s {Tags:['empty']}") {
-            for(3,8) {
-                /replaceitem block ~ ~ ~ container.$(i) minecraft:air 1
-            }
-            for(12,17) {
-                /replaceitem block ~ ~ ~ container.$(i) minecraft:air 1
-            }
-            for(21,26) {
-                /replaceitem block ~ ~ ~ container.$(i) minecraft:air 1
-            }
-            /tag @s add empty
+    /execute store success score @e temp run clear @p[limit=1,sort=nearest] minecraft:paper{CustomModelData:24110}
+    if ('score @s temp matches 1') {
+        /scoreboard players add @s paper 1
+        /scoreboard players set @s temp 0
+    }
+
+    // Fill all slots with transparent paper
+    for(3,7) {
+        /replaceitem block ~ ~ ~ container.$(i) minecraft:paper{CustomModelData:24110,display:{Name:'[{"text":""}]'}} 1
+    }
+    for(12,16) {
+        /replaceitem block ~ ~ ~ container.$(i) minecraft:paper{CustomModelData:24110,display:{Name:'[{"text":""}]'}} 1
+    }
+    for(21,25) {
+        /replaceitem block ~ ~ ~ container.$(i) minecraft:paper{CustomModelData:24110,display:{Name:'[{"text":""}]'}} 1
+    }
+
+    modal set_cmd(slot, cmd, desc, category) {
+        /replaceitem block ~ ~ ~ container.$(slot) minecraft:paper{CustomModelData:$(cmd),display:{Name:'[{"text":"$(desc)","italic":false}]',Lore:['[{"text":"$(category)","italic":false}]']}} 1
+    }
+
+    modal set_category(category) {
+        /replaceitem block ~ ~ ~ container.17 minecraft:paper{CustomModelData:24111,display:{Name:'[{"text":"Category: ","italic":false},{"text":"$(category)","italic":false,"color":"dark_purple"}]'}} 1
+    }
+
+    // If machine has paper
+    if("score @s paper matches 1..") {
+        /tag @s remove empty
+        if("score @s scroll matches 1") {
+            set_category("Robot commands")
+
+            set_cmd(3, 24002, "Forward", "Robot command")
+            set_cmd(4, 24009, "Backward", "Robot command")
+            set_cmd(5, 24004, "Left", "Robot command")
+            set_cmd(6, 24003, "Right", "Robot command")
+            set_cmd(12, 24007, "Up", "Robot command")
+            set_cmd(13, 24008, "Down", "Robot command")
+            set_cmd(21, 24006, "Dig", "Robot command")
+            set_cmd(22, 24016, "Dig up", "Robot command")
+            set_cmd(23, 24017, "Dig down", "Robot command")
+            set_cmd(25, 24018, "Attack", "Robot command")
         }
+        if("score @s scroll matches 2") {
+            set_category("Control blocks")
+            
+            set_cmd(3, 24005, "if", "Control block")
+            set_cmd(4, 24015, "else", "Control block")
+            set_cmd(5, 24012, "for", "Control block")
+            set_cmd(6, 24048, "while", "Control block")
+            set_cmd(12, 24011, "{", "Control block")
+            set_cmd(13, 24010, "}", "Control block")
+            set_cmd(15, 24014, ")", "Control block")
+            set_cmd(16, 24013, "(", "Control block")
+            set_cmd(21, 24019, "from-to", "Control block")
+        }
+        if("score @s scroll matches 3") {
+            set_category("Operators")
+            
+            set_cmd(3, 24030, "equal", "Operator")
+            set_cmd(4, 24031, "not equal", "Operator")
+            set_cmd(5, 24032, "greater than", "Operator")
+            set_cmd(6, 24033, "less than", "Operator")
+            set_cmd(12, 24034, "=", "Operator")
+            set_cmd(21, 24035, "+", "Operator")
+            set_cmd(22, 24036, "-", "Operator")
+            set_cmd(23, 24037, "*", "Operator")
+            set_cmd(24, 24038, "/", "Operator")
+            set_cmd(25, 24039, "% (mod)", "Operator")
+        }
+        if("score @s scroll matches 4") {
+            set_category("Numeric constants")
+            
+            set_cmd(3, 24021, "1", "Numeric constant")
+            set_cmd(4, 24022, "2", "Numeric constant")
+            set_cmd(5, 24023, "3", "Numeric constant")
+            set_cmd(6, 24024, "4", "Numeric constant")
+            set_cmd(7, 24025, "5", "Numeric constant")
+            set_cmd(12, 24026, "6", "Numeric constant")
+            set_cmd(13, 24027, "7", "Numeric constant")
+            set_cmd(14, 24028, "8", "Numeric constant")
+            set_cmd(15, 24029, "9", "Numeric constant")
+            set_cmd(16, 24020, "0", "Numeric constant")
+        }
+        if("score @s scroll matches 5") {
+            set_category("Constants")
+            
+            set_cmd(3, 24040, "X coordinate", "Constant")
+            set_cmd(4, 24041, "Y coordinate", "Constant")
+            set_cmd(5, 24042, "Z coordinate", "Constant")
+            set_cmd(6, 24046, "rotation", "Constant")
+            set_cmd(12, 24043, "block in front", "Constant")
+            set_cmd(13, 24044, "block above", "Constant")
+            set_cmd(14, 24045, "block below", "Constant")
+            set_cmd(21, 24047, "# mobs in range", "Constant")
+        }
+        if("score @s scroll matches 6") {
+            set_category("Variables")
+            
+            set_cmd(3, 24050, "a", "Variable")
+            set_cmd(4, 24051, "b", "Variable")
+            set_cmd(5, 24052, "c", "Variable")
+            set_cmd(6, 24053, "d", "Variable")
+            set_cmd(7, 24054, "e", "Variable")
+            set_cmd(12, 24055, "f", "Variable")
+            set_cmd(13, 24056, "g", "Variable")
+            set_cmd(14, 24057, "h", "Variable")
+            set_cmd(15, 24058, "i", "Variable")
+            set_cmd(16, 24059, "j", "Variable")
+            set_cmd(21, 24061, "x", "Variable")
+            set_cmd(22, 24062, "y", "Variable")
+            set_cmd(23, 24063, "z", "Variable")
+        }
+        if("score @s scroll matches 7") {
+            set_category("Miscellaneous")
+            
+            /replaceitem block ~ ~ ~ container.3 minecraft:paper 1
+        }
+
+    } else {
+        for(3,7) {
+            /replaceitem block ~ ~ ~ container.$(i) minecraft:paper{CustomModelData:24101,display:{Name:'[{"text":"Insert paper to print commands","italic":false}]'}} 1
+        }
+        for(12,16) {
+            /replaceitem block ~ ~ ~ container.$(i) minecraft:paper{CustomModelData:24101,display:{Name:'[{"text":"Insert paper to print commands","italic":false}]'}} 1
+        }
+        for(21,25) {
+            /replaceitem block ~ ~ ~ container.$(i) minecraft:paper{CustomModelData:24101,display:{Name:'[{"text":"Insert paper to print commands","italic":false}]'}} 1
+        }
+        /tag @s add empty
     }
 }

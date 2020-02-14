@@ -47,6 +47,15 @@ if('data entity @s HandItems[0].tag.execution.temp{type:1}') {
     if('data entity @s HandItems[0].tag.execution.temp{cmd:24009}') {
         /function computercraft:machines/robot/cmd/back
     }
+    if('data entity @s HandItems[0].tag.execution.temp{cmd:24016}') {
+        /function computercraft:machines/robot/cmd/mine_up
+    }
+    if('data entity @s HandItems[0].tag.execution.temp{cmd:24017}') {
+        /function computercraft:machines/robot/cmd/mine_down
+    }
+    if('data entity @s HandItems[0].tag.execution.temp{cmd:24018}') {
+        /function computercraft:machines/robot/cmd/hit
+    }
 }
 
 // If statement

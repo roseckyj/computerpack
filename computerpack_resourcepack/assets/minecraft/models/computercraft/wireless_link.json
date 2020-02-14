@@ -1,0 +1,23 @@
+{
+    "parent": "block/orientable",
+    "textures": {
+        "top": "computercraft/wireless_link/top",
+        "bottom": "computercraft/wireless_link/bottom",
+        "front": "computercraft/wireless_link/front",
+        "side": "computercraft/wireless_link/side"
+    },
+    "display": {
+        "head": {
+            "scale": [
+                0.81,
+                0.81,
+                0.81
+            ],
+            "translation": [
+                0,
+                -49.6,
+                0.01
+            ]
+        }
+    }
+}

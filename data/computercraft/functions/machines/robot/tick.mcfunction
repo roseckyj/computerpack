@@ -21,6 +21,9 @@ execute if data entity @s HandItems[0].tag.execution.temp{type:1} if data entity
 execute if data entity @s HandItems[0].tag.execution.temp{type:1} if data entity @s HandItems[0].tag.execution.temp{cmd:24007} run function computercraft:machines/robot/cmd/up
 execute if data entity @s HandItems[0].tag.execution.temp{type:1} if data entity @s HandItems[0].tag.execution.temp{cmd:24008} run function computercraft:machines/robot/cmd/down
 execute if data entity @s HandItems[0].tag.execution.temp{type:1} if data entity @s HandItems[0].tag.execution.temp{cmd:24009} run function computercraft:machines/robot/cmd/back
+execute if data entity @s HandItems[0].tag.execution.temp{type:1} if data entity @s HandItems[0].tag.execution.temp{cmd:24016} run function computercraft:machines/robot/cmd/mine_up
+execute if data entity @s HandItems[0].tag.execution.temp{type:1} if data entity @s HandItems[0].tag.execution.temp{cmd:24017} run function computercraft:machines/robot/cmd/mine_down
+execute if data entity @s HandItems[0].tag.execution.temp{type:1} if data entity @s HandItems[0].tag.execution.temp{cmd:24018} run function computercraft:machines/robot/cmd/hit
 
 execute if data entity @s HandItems[0].tag.execution.temp{type:3} run setblock ~ 0 ~ minecraft:bedrock replace
 execute if data entity @s HandItems[0].tag.execution.temp{type:3} run clone ~0 ~1 ~0 ~0 ~1 ~0 ~ 1 ~ replace
