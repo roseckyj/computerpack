@@ -1,2 +1,3 @@
 # Ignore compiled files
-functions/*
+data/*/functions/*
+!data/*/functions/readme.md
