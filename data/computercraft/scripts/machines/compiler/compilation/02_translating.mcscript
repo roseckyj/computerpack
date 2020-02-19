@@ -1,4 +1,4 @@
-#file: ./02
+#file: ./translating
 
 /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.merged[0]
 /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write set value {type: 0}

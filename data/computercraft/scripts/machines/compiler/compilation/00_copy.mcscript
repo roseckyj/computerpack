@@ -1,4 +1,4 @@
-#file: ./00
+#file: ./copy
 
 /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.source set value []
 for (1,50) {

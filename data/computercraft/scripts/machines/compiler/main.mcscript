@@ -16,7 +16,7 @@ asat(@e[tag=isCustomBlock,tag=block4]) {
  
         // When inserted storage
         if('data entity @s {Tags:["compilation_empty"]}') {
-            /function computercraft:machines/compiler/compilation/00
+            /function computercraft:machines/compiler/compilation/copy
 
             /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error set value ""
             /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_desc set value ""
@@ -28,7 +28,7 @@ asat(@e[tag=isCustomBlock,tag=block4]) {
 
         // Merging
         if('data entity @s {Tags:["compilation_merge"]}') {
-            /function computercraft:machines/compiler/compilation/01
+            /function computercraft:machines/compiler/compilation/merge
         }
 
         // When merging finished
@@ -41,7 +41,7 @@ asat(@e[tag=isCustomBlock,tag=block4]) {
 
         // Translating
         if('data entity @s {Tags:["compilation_translating"]}') {
-            /function computercraft:machines/compiler/compilation/02
+            /function computercraft:machines/compiler/compilation/translating
         }
 
         // When translation finished
@@ -54,7 +54,7 @@ asat(@e[tag=isCustomBlock,tag=block4]) {
 
         // Grouping
         if('data entity @s {Tags:["compilation_grouping"]}') {
-            /function computercraft:machines/compiler/compilation/03
+            /function computercraft:machines/compiler/compilation/grouping
         }
 
         // When translation finished
@@ -72,7 +72,7 @@ asat(@e[tag=isCustomBlock,tag=block4]) {
 
         // Control blocks assigning
         if('data entity @s {Tags:["compilation_controls"]}') {
-            /function computercraft:machines/compiler/compilation/04
+            /function computercraft:machines/compiler/compilation/controls
         }
 
         // When assigning finished

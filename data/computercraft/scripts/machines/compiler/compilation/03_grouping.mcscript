@@ -1,4 +1,4 @@
-#file: ./03
+#file: ./grouping
 
 /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.translated[0]
 

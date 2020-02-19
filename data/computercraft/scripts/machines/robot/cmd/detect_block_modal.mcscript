@@ -1,8 +1,8 @@
-modal detect_block(x,y,z) {
+modal detect_block(x,y,z,variable) {
     /setblock ~ 0 ~ minecraft:bedrock replace
     /clone ~$(x) ~$(y) ~$(z) ~$(x) ~$(y) ~$(z) ~ 1 ~ replace
     /setblock ~ 1 ~ minecraft:air destroy
-    /data modify entity @s HandItems[0].tag.execution.block set from entity @e[limit=1,sort=nearest,y=1,distance=0..1,type=item] Item.id
+    /data modify entity @s HandItems[0].tag.execution.var.$(variable) set from entity @e[limit=1,sort=nearest,y=1,distance=0..1,type=item] Item.id
     /setblock ~ 1 ~ minecraft:bedrock replace
     /kill @e[limit=1,sort=nearest,y=0,distance=0..2,type=item]
 }
