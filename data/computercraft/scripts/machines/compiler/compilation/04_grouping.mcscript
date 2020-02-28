@@ -1,0 +1,55 @@
+#file: ./grouping
+if('data entity @s {Tags:["compilation_grouping"]}') {
+    /function computercraft:machines/compiler/compilation/grouping_loop
+
+    if (!'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[]') {
+        /function computercraft:machines/compiler/compilation/grouping_after
+    }
+}
+
+#file: ./grouping_before
+/tag @s remove compilation_grouping_done
+/tag @s add compilation_grouping
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping set value {stack:[],main:[]}
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
+
+#file: ./grouping_after
+if ('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.stack[]') {
+    compilation_error("Brackets mismatch", "missing closing bracket")
+}
+/tag @s remove compilation_grouping
+/tag @s add compilation_grouping_done
+/tag @s add compilation_next
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.main
+
+
+#file: ./grouping_loop
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[0]
+
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"bracket_open"}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2 set value {type:"brackets", children: []}
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2.id set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp.id
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.main prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.stack prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.main
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.main set value []
+
+} else if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"bracket_close"}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2 set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.stack[0][0]
+    
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{id:"()"}' && !'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2{id:"()"}') {
+        compilation_error("Brackets mismatch", "`}` expected, but `)` found")
+    }
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{id:"{}"}' && !'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2{id:"{}"}') {
+        compilation_error("Brackets mismatch", "`)` expected, but `}` found")
+    }
+
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.stack[0][0].children set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.main
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.main set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.stack[0]
+    /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.stack[0]
+
+} else {
+    // Standard command
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.main prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp
+}
+
+/data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[0]

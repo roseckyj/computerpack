@@ -1,0 +1,157 @@
+#file: ./controls
+if('data entity @s {Tags:["compilation_controls"]}') {
+    /function computercraft:machines/compiler/compilation/controls_loop
+
+    if (!'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[] unless data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.stack[]') {
+        /function computercraft:machines/compiler/compilation/controls_after
+    }
+}
+
+#file: ./controls_before
+/tag @s remove compilation_controls_done
+/tag @s add compilation_controls
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls set value {memory:{src:[],res:[]},stack:[]}
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
+
+#file: ./controls_after
+/tag @s remove compilation_controls
+/tag @s add compilation_controls_done
+/tag @s add compilation_next
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res
+
+
+#file: ./controls_loop
+
+// {memory:{src:[],res:[]},stack:[]}
+
+// If source is empty, pop stack
+if (!'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[]') {
+    /tag @s add compilation_empty_stack
+}
+
+if('data entity @s {Tags:["compilation_empty_stack"]}') {
+    // Store current res to temp
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res
+    // Pop stack
+    pop_stack("controls")
+    // Save temp to brackets
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[0].children set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp
+    // Move brackets to res
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[0]
+    /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[0]
+    /tag @s remove compilation_empty_stack
+}
+
+if (!'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[]') {
+    compilation_error("Brackets without control block", "no control block (e.g. IF, FOR) found")
+}
+
+// Read first (last) command from source to TEMP
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[0]
+
+if(!'data entity @s {Tags:["compilation_special_type"]}') {
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"brackets"}') {
+        // If brackets, stack whole memory and use children of brackets as new source
+        push_stack("controls")
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp.children
+
+        /tag @s add compilation_special_type
+    }
+
+    // Parse different control blocks:
+
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"control", id:"if"}') {
+        // "IF" statement
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp1 set value {}
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2 set value {}
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp3 set value {}
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp4 set value {}
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp1 set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res[0]
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2 set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res[1]
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp3 set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res[2]
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp4 set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res[3]
+
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_res set value {type: "control", id: "if", condition: [], then: [], else: []}
+
+        if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp1{type:"brackets",id:"()"}' && 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2{type:"brackets",id:"{}"}' && 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp3{type:"control",id:"else"}' && 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp4{type:"brackets",id:"{}"}') {
+            // if () {} else {}
+            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_res.condition set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp1.children
+            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_res.then set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2.children
+            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_res.else set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp4.children
+
+            // Allways remove first, because it shifts
+            /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res[0]
+            /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res[0]
+            /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res[0]
+            /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res[0]
+
+            /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[0]
+            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_res
+            /tag @s add compilation_special_type
+        }
+        if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp1{type:"brackets",id:"()"}' && 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2{type:"brackets",id:"{}"}') {
+            // if () {}
+            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_res.condition set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp1.children
+            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_res.then set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2.children
+
+            // Allways remove first, because it shifts
+            /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res[0]
+            /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res[0]
+
+            /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[0]
+            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_res
+            /tag @s add compilation_special_type
+        }
+        compilation_error("Invalid IF style", "if-then or if-then-else expected")
+    }
+
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"assign_val", id:"="}') {
+        // value assign
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp1 set value {}
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp1 set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res[0]
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2 set value {}
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2 set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[1]
+        
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_res set value {type: "assign_val", target: "", value: {}}
+
+        if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2{type:"var"}') {
+            if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp1{type:"brackets",id:"()"}' || 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp1{type:"number"}' || 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp1{type:"const"}' || 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp1{type:"var"}' || 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp1{type:"expression"}') {
+                /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_res.target set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2.id
+                /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_res.value set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp1
+                
+                /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res[0]
+                /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[0]
+                /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[0]
+                /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_res
+                /tag @s add compilation_special_type
+
+            } else {
+                compilation_error("Invalid value assignment", "expected assignable value on the right side of assignment")
+            }
+        } else {
+            compilation_error("Invalid value assignment", "expected variable on the left side of assignment")
+        }
+    }
+
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"cmd_robot"}' || 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"cmd"}') {
+        // all callable commands
+
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp1 set value {}
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp1 set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res[0]
+
+        if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp1{type:"brackets",id:"()"}') {
+            /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res[0]
+            
+            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp.arguments set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp1
+            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp
+            
+            /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[0]
+            /tag @s add compilation_special_type
+        }
+    }
+
+    // Others
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp
+    /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[0]
+}
+/tag @s remove compilation_special_type

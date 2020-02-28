@@ -1,9 +1,23 @@
 modal remove_all_tags() {
+    /tag @s remove compilation_copy
+    /tag @s remove compilation_copy_done
     /tag @s remove compilation_merge
+    /tag @s remove compilation_merge_done
     /tag @s remove compilation_parsing
+    /tag @s remove compilation_parsing_done
     /tag @s remove compilation_translating
+    /tag @s remove compilation_translating_done
+    /tag @s remove compilation_numbers
+    /tag @s remove compilation_numbers_done
     /tag @s remove compilation_grouping
+    /tag @s remove compilation_grouping_done
+    /tag @s remove compilation_expressions
+    /tag @s remove compilation_expressions_done
     /tag @s remove compilation_controls
+    /tag @s remove compilation_controls_done
+    /tag @s remove compilation_validation
+    /tag @s remove compilation_validation_done
+
     /tag @s remove compilation_done
 }
 
@@ -16,71 +30,67 @@ asat(@e[tag=isCustomBlock,tag=block4]) {
  
         // When inserted storage
         if('data entity @s {Tags:["compilation_empty"]}') {
-            /function computercraft:machines/compiler/compilation/copy
+            /data remove block ~ ~ ~ Items[{Slot:11b}].tag.execution
+            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation set value {error: "", error_desc: ""}
 
-            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error set value ""
-            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_desc set value ""
-            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.merged set value []
-
-            /tag @s add compilation_merge
+            /function computercraft:machines/compiler/compilation/copy_before
             /tag @s remove compilation_empty
         }
 
-        // Merging
-        if('data entity @s {Tags:["compilation_merge"]}') {
-            /function computercraft:machines/compiler/compilation/merge
-        }
-
-        // When merging finished
-        if('data entity @s {Tags:["compilation_merge"]} unless data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.source[]') {
-            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.translated set value []
-            
-            /tag @s add compilation_translating
-            /tag @s remove compilation_merge
-        }
-
-        // Translating
-        if('data entity @s {Tags:["compilation_translating"]}') {
-            /function computercraft:machines/compiler/compilation/translating
-        }
-
-        // When translation finished
-        if('data entity @s {Tags:["compilation_translating"]} unless data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.merged[]') {
-            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped set value {stack:[],main:[]}
-            
-            /tag @s add compilation_grouping
-            /tag @s remove compilation_translating
-        }
-
-        // Grouping
-        if('data entity @s {Tags:["compilation_grouping"]}') {
-            /function computercraft:machines/compiler/compilation/grouping
-        }
-
-        // When translation finished
-        if('data entity @s {Tags:["compilation_grouping"]} unless data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.translated[]') {
-            if ('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped.stack[]') {
-                compilation_error("Brackets mismatch", "missing closing bracket")
+        // Set order (latest first)
+        if ( 'data entity @s {Tags:["compilation_next"]}') {
+            if ('data entity @s {Tags:["compilation_validation_done"]}') {
+                /data modify block ~ ~ ~ Items[{Slot:11b}].tag.steps.validation set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
+                /tag @s add compilation_done
+                /tag @s remove compilation_next
             }
-
-            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls set value {memory:{src:[],res:[]},stack:[]}
-            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouped.main
-            
-            /tag @s add compilation_controls
-            /tag @s remove compilation_grouping
+            if ('data entity @s {Tags:["compilation_controls_done"]}') {
+                /data modify block ~ ~ ~ Items[{Slot:11b}].tag.steps.controls set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
+                /function computercraft:machines/compiler/compilation/validation_before
+                /tag @s remove compilation_next
+            }
+            if ('data entity @s {Tags:["compilation_expressions_done"]}') {
+                /data modify block ~ ~ ~ Items[{Slot:11b}].tag.steps.expressions set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
+                /function computercraft:machines/compiler/compilation/controls_before
+                /tag @s remove compilation_next
+            }
+            if ('data entity @s {Tags:["compilation_grouping_done"]}') {
+                /data modify block ~ ~ ~ Items[{Slot:11b}].tag.steps.grouping set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
+                /function computercraft:machines/compiler/compilation/expressions_before
+                /tag @s remove compilation_next
+            }
+            if ('data entity @s {Tags:["compilation_numbers_done"]}') {
+                /data modify block ~ ~ ~ Items[{Slot:11b}].tag.steps.numbers set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
+                /function computercraft:machines/compiler/compilation/grouping_before
+                /tag @s remove compilation_next
+            }
+            if ('data entity @s {Tags:["compilation_translating_done"]}') {
+                /data modify block ~ ~ ~ Items[{Slot:11b}].tag.steps.translating set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
+                /function computercraft:machines/compiler/compilation/numbers_before
+                /tag @s remove compilation_next
+            }
+            if ('data entity @s {Tags:["compilation_merge_done"]}') {
+                /data modify block ~ ~ ~ Items[{Slot:11b}].tag.steps.merge set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
+                /function computercraft:machines/compiler/compilation/translating_before
+                /tag @s remove compilation_next
+            }            
+            if ('data entity @s {Tags:["compilation_copy_done"]}') {
+                /data modify block ~ ~ ~ Items[{Slot:11b}].tag.steps.copy set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
+                /function computercraft:machines/compiler/compilation/merge_before
+                /tag @s remove compilation_next
+            }
         }
 
-        // Control blocks assigning
-        if('data entity @s {Tags:["compilation_controls"]}') {
-            /function computercraft:machines/compiler/compilation/controls
-        }
-
-        // When assigning finished
-        if('data entity @s {Tags:["compilation_controls"]} unless data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.src[] unless data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.stack[]') {
-            
-            /tag @s add compilation_done
-            /tag @s remove compilation_controls
-        }
+        // Call all functions
+        /function computercraft:machines/compiler/compilation/copy
+        /function computercraft:machines/compiler/compilation/merge
+        /function computercraft:machines/compiler/compilation/translating
+        /function computercraft:machines/compiler/compilation/numbers
+        /function computercraft:machines/compiler/compilation/grouping
+        /function computercraft:machines/compiler/compilation/expressions
+        /function computercraft:machines/compiler/compilation/controls
+        /function computercraft:machines/compiler/compilation/validation
+        
 
         // --------------- Compilation error ------------------
         if('data entity @s {Tags:["compilation_error"]}') {          
@@ -92,7 +102,7 @@ asat(@e[tag=isCustomBlock,tag=block4]) {
 
         // --------------- Compilation done ------------------
         if('data entity @s {Tags:["compilation_done"]}') {    
-            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compiled set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.controls.memory.res
+            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compiled set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
             /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation
             /data modify block ~ ~ ~ Items[{Slot:11b}].tag.display.Lore[1] set value '[{"text":"Compiled", "italic": false, "color": "green"}]'
             /data modify block ~ ~ ~ Items[{Slot:11b}].Slot set value 15b

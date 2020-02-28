@@ -1,0 +1,7 @@
+#file: ./reverse_basic
+
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[0]
+/data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[0]
+if ('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[]') {
+    /function computercraft:machines/compiler/compilation/reverse
+}

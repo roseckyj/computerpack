@@ -1,0 +1,172 @@
+#file: ./expressions
+if('data entity @s {Tags:["compilation_expressions"]}') {
+    /tag @s remove compilation_expressions_iteration_finished
+
+    if (!'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[] unless data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.stack[]') {
+        /tag @s add compilation_expressions_iteration_finished
+    }
+    if ('data entity @s {Tags:["compilation_expressions_iteration_finished"]}') {
+        if ( 'data entity @s {Tags:["compilation_expressions_loop_7"]}') {
+            /function computercraft:machines/compiler/compilation/expressions_after
+        }
+        if ('data entity @s {Tags:["compilation_expressions_loop_6"]}') {
+            /tag @s add compilation_expressions_loop_7
+            /tag @s remove compilation_expressions_loop_6
+        }
+        if ('data entity @s {Tags:["compilation_expressions_loop_5"]}') {
+            /tag @s add compilation_expressions_loop_6
+            /tag @s remove compilation_expressions_loop_5
+        }
+        if ('data entity @s {Tags:["compilation_expressions_loop_4"]}') {
+            /tag @s add compilation_expressions_loop_5
+            /tag @s remove compilation_expressions_loop_4
+        }
+        if ('data entity @s {Tags:["compilation_expressions_loop_3"]}') {
+            /tag @s add compilation_expressions_loop_4
+            /tag @s remove compilation_expressions_loop_3
+        }
+        if ('data entity @s {Tags:["compilation_expressions_loop_2"]}') {
+            /tag @s add compilation_expressions_loop_3
+            /tag @s remove compilation_expressions_loop_2
+        }        
+        if ('data entity @s {Tags:["compilation_expressions_loop_1"]}') {
+            /tag @s add compilation_expressions_loop_2
+            /tag @s remove compilation_expressions_loop_1
+        }
+
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.res
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions set value {memory:{src:[],res:[]},stack:[]}  
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
+    }
+
+    /function computercraft:machines/compiler/compilation/expressions_loop
+}
+
+#file: ./expressions_before
+for (1,7) {
+    /tag @s remove compilation_expressions_loop_$(i)
+}
+/tag @s remove compilation_expressions_done
+/tag @s add compilation_expressions
+/tag @s add compilation_expressions_loop_1
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions set value {memory:{src:[],res:[]},stack:[]}
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
+
+#file: ./expressions_after
+/tag @s remove compilation_expressions
+/tag @s remove compilation_expressions_iteration_finished
+for (1,7) {
+    /tag @s remove compilation_expressions_loop_$(i)
+}
+/tag @s add compilation_expressions_done
+/tag @s add compilation_next
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.res
+
+
+#file: ./expressions_loop
+
+// If source is empty, pop stack
+if (!'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[]') {
+    /tag @s add compilation_empty_stack
+}
+
+if('data entity @s {Tags:["compilation_empty_stack"]}') {
+    // Store current res to temp
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.res
+    // Pop stack
+    pop_stack("expressions")
+    // Save temp to brackets
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[0].children set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp
+    // Move brackets to res
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.res append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[0]
+    /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[0]
+    /tag @s remove compilation_empty_stack
+}
+
+// Read first (last) command from source to TEMP
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[0]
+
+if(!'data entity @s {Tags:["compilation_special_type"]}') {
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"brackets"}') {
+        // If brackets, stack whole memory and use children of brackets as new source
+        push_stack("expressions")
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp.children
+
+        /tag @s add compilation_special_type
+    }
+
+    // Operator priority:
+    //    1:    *   /   %
+    //    2:    +   -
+    //    3:    <   <=   >   >=
+    //    4:    ==   !=
+    //    5:    &&
+    //    6:    ||
+
+    // Parse expression types:
+    modal parse_if_priority(operator, priority) {
+        if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"operator",id:"$(operator)"}' && 'data entity @s {Tags:["compilation_expressions_loop_$(priority)"]}') {
+            //say Found operator $(operator)
+            /function computercraft:machines/compiler/compilation/expressions_process
+            /tag @s add compilation_special_type
+        }
+    }
+
+    parse_if_priority("*", 1)
+    parse_if_priority("/", 1)
+    parse_if_priority("%", 1)
+    parse_if_priority("+", 2)
+    parse_if_priority("-", 2)
+    parse_if_priority("<", 3)
+    parse_if_priority(">", 3)
+    parse_if_priority("<=", 3)
+    parse_if_priority(">=", 3)
+    parse_if_priority("==", 4)
+    parse_if_priority("!=", 4)
+    parse_if_priority("&&", 5)
+    parse_if_priority("||", 6)    
+
+    // Others
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.res append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp
+    /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[0]
+}
+/tag @s remove compilation_special_type
+
+
+// Helper functions
+#file: ./expressions_process
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_left set value {}
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_left set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.res[-1]
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_right set value {}
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_right set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[1]
+
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_res set value {type: "expression", left: {}, right: {}, id: ""}
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_res.id set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp.id
+
+/tag @s remove compilation_expressions_left_ok
+/tag @s remove compilation_expressions_right_ok
+
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_left{type:"brackets",id:"()"}' || 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_left{type:"number"}' || 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_left{type:"const"}' || 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_left{type:"var"}' || 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_left{type:"expression"}') {
+    /tag @s add compilation_expressions_left_ok
+}
+
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_right{type:"brackets",id:"()"}' || 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_right{type:"number"}' || 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_right{type:"const"}' || 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_right{type:"var"}' || 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_right{type:"expression"}') {
+    /tag @s add compilation_expressions_right_ok
+}
+
+if ('data entity @s {Tags:["compilation_expressions_left_ok"]}' && 'data entity @s {Tags:["compilation_expressions_right_ok"]}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_res.left set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_left
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_res.right set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_right
+
+    /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.res[-1]
+    /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[0]
+    /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[0]
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.res append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_res
+}
+
+if (!'data entity @s {Tags:["compilation_expressions_left_ok"]}') {
+    compilation_error("Invalid expression", "invalid left side of expression")
+}
+if (!'data entity @s {Tags:["compilation_expressions_right_ok"]}') {
+    compilation_error("Invalid expression", "invalid right side of expression")
+}

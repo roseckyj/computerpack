@@ -1,16 +1,105 @@
 #file: ./translating
+if('data entity @s {Tags:["compilation_translating"]}') {
+    /function computercraft:machines/compiler/compilation/translating_loop
 
-/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.merged[0]
+    if (!'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[]') {
+        /function computercraft:machines/compiler/compilation/translating_after
+    }
+}
+
+#file: ./translating_before
+/tag @s remove compilation_translating_done
+/tag @s add compilation_translating
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output set value []
+
+#file: ./translating_after
+/tag @s remove compilation_translating
+/tag @s add compilation_translating_done
+/tag @s add compilation_next
+
+
+#file: ./translating_loop
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[0]
 /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write set value {type: 0}
 /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write.id set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read.id
 /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write.count set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read.Count
 
-// Translate known commands
-if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read{id:"minecraft:paper"}') {
-    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write set value {type: 1}
-    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write.cmd set value 0
-    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write.cmd set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read.tag.CustomModelData
+modal parse_paper(model, type, id) {
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read.tag{CustomModelData:$(model)}') {
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write set value {type: "$(type)", id: "$(id)"}
+    }
+}
+modal parse_paper_number(model, type, value) {
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read.tag{CustomModelData:$(model)}') {
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write set value {type: "$(type)", value: $(value)}
+    }
 }
 
-/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.translated append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write
-/data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.merged[0]
+// Translate known commands
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read{id:"minecraft:paper"}') {
+    parse_paper(24002, "cmd_robot", "forward")
+    parse_paper(24003, "cmd_robot", "right")
+    parse_paper(24004, "cmd_robot", "left")
+    parse_paper(24005, "control", "if")
+    parse_paper(24006, "cmd_robot", "dig")
+    parse_paper(24007, "cmd_robot", "up")
+    parse_paper(24008, "cmd_robot", "down")
+    parse_paper(24009, "cmd_robot", "back")
+    parse_paper(24010, "bracket_close", "{}")
+    parse_paper(24011, "bracket_open", "{}")
+    parse_paper(24012, "control", "for")
+    parse_paper(24013, "bracket_close", "()")
+    parse_paper(24014, "bracket_open", "()")
+    parse_paper(24015, "control", "else")
+    parse_paper(24016, "cmd_robot", "dig_up")
+    parse_paper(24017, "cmd_robot", "dig_down")
+    parse_paper(24018, "cmd_robot", "hit")
+    parse_paper(24019, "range", "..")
+    parse_paper_number(24020, "number", 0)
+    parse_paper_number(24021, "number", 1)
+    parse_paper_number(24022, "number", 2)
+    parse_paper_number(24023, "number", 3)
+    parse_paper_number(24024, "number", 4)
+    parse_paper_number(24025, "number", 5)
+    parse_paper_number(24026, "number", 6)
+    parse_paper_number(24027, "number", 7)
+    parse_paper_number(24028, "number", 8)
+    parse_paper_number(24029, "number", 9)
+    parse_paper(24030, "operator", "==")
+    parse_paper(24031, "operator", "!=")
+    parse_paper(24032, "operator", ">")
+    parse_paper(24033, "operator", "<")
+    parse_paper(24034, "assign_val", "=")
+    parse_paper(24035, "operator", "+")
+    parse_paper(24036, "operator", "-")
+    parse_paper(24037, "operator", "*")
+    parse_paper(24038, "operator", "/")
+    parse_paper(24039, "operator", "%")
+    parse_paper(24040, "const", "X")
+    parse_paper(24041, "const", "Y")
+    parse_paper(24042, "const", "Z")
+    parse_paper(24043, "const", "block_front")
+    parse_paper(24044, "const", "block_up")
+    parse_paper(24045, "const", "block_down")
+    parse_paper(24046, "const", "angle")
+    parse_paper(24047, "const", "mobs")
+    parse_paper(24048, "control", "while")
+    parse_paper(24050, "var", "a")
+    parse_paper(24051, "var", "b")
+    parse_paper(24052, "var", "c")
+    parse_paper(24053, "var", "d")
+    parse_paper(24054, "var", "e")
+    parse_paper(24055, "var", "f")
+    parse_paper(24056, "var", "g")
+    parse_paper(24057, "var", "h")
+    parse_paper(24058, "var", "i")
+    parse_paper(24059, "var", "j")
+    parse_paper(24060, "var", "k")
+    parse_paper(24061, "var", "x")
+    parse_paper(24062, "var", "y")
+    parse_paper(24063, "var", "z")
+}
+
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write
+/data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[0]

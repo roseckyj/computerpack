@@ -1,0 +1,29 @@
+modal compilation_error(title, description) {
+    /tag @s add compilation_error
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error set value '[{"text":"$(title): ", "italic": false, "bold": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_desc set value '[{"text":"  $(description)", "bold": false, "italic": false, "color": "white"}]'
+
+    /tag @s remove compilation_merge
+    /tag @s remove compilation_parsing
+    /tag @s remove compilation_translating
+    /tag @s remove compilation_grouping
+    /tag @s remove compilation_controls
+    /tag @s remove compilation_done
+}
+
+modal reverse() {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output set value []
+    /function computercraft:machines/compiler/compilation/reverse_basic
+}
+
+// Recursion emulation
+modal push_stack(memory) {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.$(memory).stack prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.$(memory).memory
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.$(memory).memory set value {src:[],res:[]}
+}
+
+modal pop_stack(memory) {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.$(memory).memory set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.$(memory).stack[0]
+    /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.$(memory).stack[0]
+}

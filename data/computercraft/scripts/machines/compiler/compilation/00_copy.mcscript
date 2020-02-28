@@ -1,6 +1,21 @@
 #file: ./copy
+if('data entity @s {Tags:["compilation_copy"]}') {
+    /function computercraft:machines/compiler/compilation/copy_loop
+    /function computercraft:machines/compiler/compilation/copy_after
+}
 
-/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.source set value []
+#file: ./copy_before
+/tag @s remove compilation_copy_done
+/tag @s add compilation_copy
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output set value []
+
+#file: ./copy_after
+/tag @s remove compilation_copy
+/tag @s add compilation_copy_done
+/tag @s add compilation_next
+
+
+#file: ./copy_loop
 for (1,50) {
-    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.source append from block ~ ~ ~ Items[{Slot:11b}].tag.code.$(i)
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output append from block ~ ~ ~ Items[{Slot:11b}].tag.code.$(i)
 }

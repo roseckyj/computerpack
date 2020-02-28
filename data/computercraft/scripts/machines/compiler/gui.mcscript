@@ -1,5 +1,28 @@
-modal status(cmd, c1, c2, c3, c4, c5) {
-    /replaceitem block ~ ~ ~ container.13 minecraft:paper{CustomModelData:$(cmd),display:{Name:'[{"text":"Compiling","italic":false}]', Lore:['[{"text":"- Copy data","color":"$(c1)","italic":false}]','[{"text":"- Merge pages","color":"$(c2)","italic":false}]','[{"text":"- Translate items","color":"$(c3)","italic":false}]','[{"text":"- Group commands","color":"$(c4)","italic":false}]','[{"text":"- Assign control blocks","color":"$(c5)","italic":false}]']}} 1
+modal status(tagName, desc) {
+    if ('data entity @s {Tags:["compilation_$(tagName)_done"]}') {
+        /data modify block ~ ~ ~ Items[{Slot:13b}].tag.display.Lore append value '[{"text":"- $(desc)","color":"dark_green","italic":false}]'
+    } else if ('data entity @s {Tags:["compilation_$(tagName)"]}') {
+        /data modify block ~ ~ ~ Items[{Slot:13b}].tag.display.Lore append value '[{"text":"- $(desc)","color":"yellow","italic":false}]'
+        /data modify block ~ ~ ~ Items[{Slot:13b}].tag.CustomModelData set value 24108
+    } else {
+        /data modify block ~ ~ ~ Items[{Slot:13b}].tag.display.Lore append value '[{"text":"- $(desc)","color":"white","italic":false}]'
+    }
+}
+
+modal status_expressions(tagName, desc) {
+    if ('data entity @s {Tags:["compilation_$(tagName)_done"]}') {
+        /data modify block ~ ~ ~ Items[{Slot:13b}].tag.display.Lore append value '[{"text":"- $(desc)","color":"dark_green","italic":false}]'
+    } else if ('data entity @s {Tags:["compilation_$(tagName)"]}') {
+        for (1,7) {
+            if ('data entity @s {Tags:["compilation_$(tagName)_loop_$(i)"]}') {
+                /data modify block ~ ~ ~ Items[{Slot:13b}].tag.display.Lore append value '[{"text":"- $(desc) ($(i)/7)","color":"yellow","italic":false}]'
+            }
+        }
+
+        /data modify block ~ ~ ~ Items[{Slot:13b}].tag.CustomModelData set value 24108
+    } else {
+        /data modify block ~ ~ ~ Items[{Slot:13b}].tag.display.Lore append value '[{"text":"- $(desc)","color":"white","italic":false}]'
+    }
 }
 
 for(0,10) {
@@ -11,26 +34,22 @@ if(!"data block ~ ~ ~ {Items:[{Slot:12b}]}") {
     /replaceitem block ~ ~ ~ container.12 minecraft:paper{CustomModelData:24101,display:{Name:'[{"text":""}]'}} 1
 }
 
-if('data entity @s {Tags:["compilation_empty"]}') {
-    /replaceitem block ~ ~ ~ container.13 minecraft:paper{CustomModelData:24102,display:{Name:'[{"text":""}]'}} 1
-}
-if('data entity @s {Tags:["compilation_merge"]}') {
-    status(24108, "dark_green", "yellow", "white", "white", "white")
-}
-if('data entity @s {Tags:["compilation_translating"]}') {
-    status(24108, "dark_green", "dark_green", "yellow", "white", "white")
-}
-if('data entity @s {Tags:["compilation_grouping"]}') {
-    status(24108, "dark_green", "dark_green", "dark_green", "yellow", "white")
-}
-if('data entity @s {Tags:["compilation_controls"]}') {
-    status(24108, "dark_green", "dark_green", "dark_green", "dark_green", "yellow")
-}
-if('data entity @s {Tags:["compilation_done"]}') {
-    status(24102, "dark_green", "dark_green", "dark_green", "dark_green", "dark_green")
-}
+/replaceitem block ~ ~ ~ container.13 minecraft:paper{CustomModelData:24102,display:{Name:'[{"text":"Compiling","italic":false}]', Lore:[]}} 1
+
+status('copy', 'Copy source')
+status('merge', 'Merge pages')
+status('translating', 'Translate items')
+status('numbers', 'Parse numbers')
+status('grouping', 'Group commands')
+status_expressions('expressions', 'Parsing expressions')
+status('controls', 'Assign control blocks')
+status('validation', 'Validate')
+
 if('data entity @s {Tags:["compilation_error"]}') {
     /replaceitem block ~ ~ ~ container.13 minecraft:paper{CustomModelData:24109,display:{Name:'[{"text":"Compilation error!", "color":"red", "italic": false}]',Lore:[]}} 1
+}
+if('data entity @s {Tags:["compilation_empty"]}') {
+    /replaceitem block ~ ~ ~ container.13 minecraft:paper{CustomModelData:24102,display:{Name:'[{"text":""}]'}} 1
 }
 
 if(!"data block ~ ~ ~ {Items:[{Slot:14b}]}") {

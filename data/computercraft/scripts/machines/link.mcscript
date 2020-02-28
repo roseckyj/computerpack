@@ -1,0 +1,5 @@
+asat(@e[tag=isCustomBlock,tag=block5]) {
+    if ('score CC gameTicks matches 0') {
+        /particle minecraft:portal ~ ~ ~ 0 0 0 0.4 3
+    }
+}

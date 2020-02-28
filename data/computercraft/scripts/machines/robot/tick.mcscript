@@ -1,3 +1,5 @@
+// TODO: clear execution section after memory inserted
+
 // Enqueue whole program, if queue is empty
 if(!'data entity @s HandItems[0].tag.execution.queue[]') {
     /data modify entity @s HandItems[0].tag.execution.to_enqueue set from entity @s HandItems[0].tag.compiled
@@ -61,8 +63,8 @@ if('data entity @s HandItems[0].tag.execution.temp{type:1}') {
 // If statement
 if('data entity @s HandItems[0].tag.execution.temp{type:3}') {
     // TODO: check for condition
-    detect_block(0,1,0)
-    /execute store success entity @s HandItems[0].tag.execution.block_not_match byte 1 run data modify entity @s HandItems[0].tag.execution.block set from entity @s HandItems[0].tag.execution.temp.condition[0].id
+    detect_block(0,1,0,"block_front")
+    /execute store success entity @s HandItems[0].tag.execution.block_not_match byte 1 run data modify entity @s HandItems[0].tag.execution.var.block_front set from entity @s HandItems[0].tag.execution.temp.condition[0].id
     if ('data entity @s HandItems[0].tag.execution{block_not_match:0b}') {
         /data modify entity @s HandItems[0].tag.execution.to_enqueue set from entity @s HandItems[0].tag.execution.temp.then
     } else {

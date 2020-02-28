@@ -1,8 +1,7 @@
 # ToDo
 
 - Parsing
-    - Variables (+ constants for surrounding blocks, coordinates, orientation)
-    - Math expressions
+    - For loop
 
 - Robots
     - Ability to place blocks
@@ -18,3 +17,4 @@
 
 - Printer will "eat" any items placed inside
 - Robots don't interact with fluids well
+- When parsing math expressions, priority from the right is used for operators with same priority

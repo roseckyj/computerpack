@@ -1,8 +1,27 @@
 #file: ./merge
+if('data entity @s {Tags:["compilation_merge"]}') {
+    /function computercraft:machines/compiler/compilation/merge_loop
 
-if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.source[0][]') {
-    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.merged append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.source[0][0]
-    /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.source[0][0]
+    if (!'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[]') {
+        /function computercraft:machines/compiler/compilation/merge_after
+    }
+}
+
+#file: ./merge_before
+/tag @s remove compilation_merge_done
+/tag @s add compilation_merge
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output set value []
+
+#file: ./merge_after
+/tag @s remove compilation_merge
+/tag @s add compilation_merge_done
+/tag @s add compilation_next
+
+#file: ./merge_loop
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[0][]') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[0][0]
+    /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[0][0]
 } else {
-    /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.source[0]
+    /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[0]
 }

@@ -1,0 +1,47 @@
+#file: ./numbers
+if('data entity @s {Tags:["compilation_numbers"]}') {
+    /function computercraft:machines/compiler/compilation/numbers_loop
+
+    if (!'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[]') {
+        /function computercraft:machines/compiler/compilation/numbers_after
+    }
+}
+
+#file: ./numbers_before
+/tag @s remove compilation_numbers_done
+/tag @s add compilation_numbers
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output set value []
+
+#file: ./numbers_after
+reverse()
+
+/tag @s remove compilation_numbers
+/tag @s add compilation_numbers_done
+/tag @s add compilation_next
+
+
+#file: ./numbers_loop
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_x1 set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[0]
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_x10 set value {}
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_x10 set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output[0]
+
+/tag @s remove compilation_numbers_is_numbers
+
+if ('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_x1{type:"number"}' && 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_x10{type:"number"}') {
+    /execute store result score @s temp run data get block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_x10.value
+    /scoreboard players set @s temp2 10
+    /scoreboard players operation @s temp *= @s temp2
+
+    /execute store result score @s temp2 run data get block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_x1.value
+    /scoreboard players operation @s temp += @s temp2
+
+    /execute store result block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output[0].value int 1 run scoreboard players get @s temp
+
+    /tag @s add compilation_numbers_is_numbers
+} 
+if (!'data entity @s {Tags:["compilation_numbers_is_numbers"]}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_x1
+}
+
+/data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[0]

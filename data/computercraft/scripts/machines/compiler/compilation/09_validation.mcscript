@@ -1,0 +1,80 @@
+#file: ./validation
+if('data entity @s {Tags:["compilation_validation"]}') {
+    /function computercraft:machines/compiler/compilation/validation_loop
+
+    if (!'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src[] unless data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.stack[]') {
+        /function computercraft:machines/compiler/compilation/validation_after
+    }
+}
+
+#file: ./validation_before
+/tag @s remove compilation_validation_done
+/tag @s add compilation_validation
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation set value {memory:{src:[],res:[]},stack:[]}
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
+
+#file: ./validation_after
+/tag @s remove compilation_validation
+/tag @s add compilation_validation_done
+/tag @s add compilation_next
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.res
+
+
+#file: ./validation_loop
+
+// {memory:{src:[],res:[]},stack:[]}
+
+// If source is empty, pop stack
+if (!'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src[]') {
+    /tag @s add compilation_empty_stack
+}
+if('data entity @s {Tags:["compilation_empty_stack"]}') {
+    // Store current res to temp
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.res
+    // Pop stack
+    pop_stack("validation")
+    // Save temp to brackets
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src[0].children set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp
+    // Move brackets to res
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.res prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src[0]
+    /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src[0]
+    /tag @s remove compilation_empty_stack
+}
+
+// Read first (last) command from source to TEMP
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src[0]
+
+if(!'data entity @s {Tags:["compilation_special_type"]}') {
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"brackets",id:"{}"}') {
+        // If brackets, stack whole memory and use children of brackets as new source
+        push_stack("validation")
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp.children
+
+        /tag @s add compilation_special_type
+    }
+
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"range"}') {
+        compilation_error("Unexpected character", "unexpected range operator outside of expression")
+    }
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"number"}') {
+        compilation_error("Unexpected character", "unexpected number outside of expression")
+    }
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"brackets"}') {
+        compilation_error("Unexpected character", "brackets without control block")
+    }
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"operator"}') {
+        // This should not happend
+        compilation_error("Unexpected character", "unparsed operator - something is wrong!")
+    }
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"const"}') {
+        compilation_error("Unexpected character", "unexpected constant outside of expression")
+    }
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"var"}') {
+        compilation_error("Unexpected character", "unexpected variable outside of expression")
+    }
+
+    // Others
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.res append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp
+    /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src[0]
+}
+/tag @s remove compilation_special_type
