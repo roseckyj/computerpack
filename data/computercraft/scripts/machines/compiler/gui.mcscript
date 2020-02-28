@@ -13,9 +13,9 @@ modal status_expressions(tagName, desc) {
     if ('data entity @s {Tags:["compilation_$(tagName)_done"]}') {
         /data modify block ~ ~ ~ Items[{Slot:13b}].tag.display.Lore append value '[{"text":"- $(desc)","color":"dark_green","italic":false}]'
     } else if ('data entity @s {Tags:["compilation_$(tagName)"]}') {
-        for (1,7) {
+        for (1,6) {
             if ('data entity @s {Tags:["compilation_$(tagName)_loop_$(i)"]}') {
-                /data modify block ~ ~ ~ Items[{Slot:13b}].tag.display.Lore append value '[{"text":"- $(desc) ($(i)/7)","color":"yellow","italic":false}]'
+                /data modify block ~ ~ ~ Items[{Slot:13b}].tag.display.Lore append value '[{"text":"- $(desc) ($(i)/6)","color":"yellow","italic":false}]'
             }
         }
 
@@ -41,7 +41,7 @@ status('merge', 'Merge pages')
 status('translating', 'Translate items')
 status('numbers', 'Parse numbers')
 status('grouping', 'Group commands')
-status_expressions('expressions', 'Parsing expressions')
+status_expressions('expressions', 'Parse expressions')
 status('controls', 'Assign control blocks')
 status('validation', 'Validate')
 

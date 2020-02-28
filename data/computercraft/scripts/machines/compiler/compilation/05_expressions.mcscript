@@ -6,11 +6,8 @@ if('data entity @s {Tags:["compilation_expressions"]}') {
         /tag @s add compilation_expressions_iteration_finished
     }
     if ('data entity @s {Tags:["compilation_expressions_iteration_finished"]}') {
-        if ( 'data entity @s {Tags:["compilation_expressions_loop_7"]}') {
-            /function computercraft:machines/compiler/compilation/expressions_after
-        }
         if ('data entity @s {Tags:["compilation_expressions_loop_6"]}') {
-            /tag @s add compilation_expressions_loop_7
+            /function computercraft:machines/compiler/compilation/expressions_after
             /tag @s remove compilation_expressions_loop_6
         }
         if ('data entity @s {Tags:["compilation_expressions_loop_5"]}') {
@@ -43,7 +40,7 @@ if('data entity @s {Tags:["compilation_expressions"]}') {
 }
 
 #file: ./expressions_before
-for (1,7) {
+for (1,6) {
     /tag @s remove compilation_expressions_loop_$(i)
 }
 /tag @s remove compilation_expressions_done
@@ -55,7 +52,7 @@ for (1,7) {
 #file: ./expressions_after
 /tag @s remove compilation_expressions
 /tag @s remove compilation_expressions_iteration_finished
-for (1,7) {
+for (1,6) {
     /tag @s remove compilation_expressions_loop_$(i)
 }
 /tag @s add compilation_expressions_done
@@ -98,7 +95,7 @@ if(!'data entity @s {Tags:["compilation_special_type"]}') {
     // Operator priority:
     //    1:    *   /   %
     //    2:    +   -
-    //    3:    <   <=   >   >=
+    //    3:    <   <=   >   >=   ..
     //    4:    ==   !=
     //    5:    &&
     //    6:    ||
@@ -121,6 +118,7 @@ if(!'data entity @s {Tags:["compilation_special_type"]}') {
     parse_if_priority(">", 3)
     parse_if_priority("<=", 3)
     parse_if_priority(">=", 3)
+    parse_if_priority("..", 3)
     parse_if_priority("==", 4)
     parse_if_priority("!=", 4)
     parse_if_priority("&&", 5)

@@ -64,7 +64,7 @@ if(!'data entity @s {Tags:["compilation_special_type"]}') {
     }
     if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"operator"}') {
         // This should not happend
-        compilation_error("Unexpected character", "unparsed operator - something is wrong!")
+        compilation_error("Internal compilation error", "validation: unparsed operator")
     }
     if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"const"}') {
         compilation_error("Unexpected character", "unexpected constant outside of expression")

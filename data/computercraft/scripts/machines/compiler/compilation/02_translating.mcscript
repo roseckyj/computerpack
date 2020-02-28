@@ -55,7 +55,7 @@ if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read{id:"minecraft:p
     parse_paper(24016, "cmd_robot", "dig_up")
     parse_paper(24017, "cmd_robot", "dig_down")
     parse_paper(24018, "cmd_robot", "hit")
-    parse_paper(24019, "range", "..")
+    parse_paper(24019, "operator", "..")
     parse_paper_number(24020, "number", 0)
     parse_paper_number(24021, "number", 1)
     parse_paper_number(24022, "number", 2)
