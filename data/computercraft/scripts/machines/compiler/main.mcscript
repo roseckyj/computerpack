@@ -13,6 +13,10 @@ modal remove_all_tags() {
     /tag @s remove compilation_grouping_done
     /tag @s remove compilation_expressions
     /tag @s remove compilation_expressions_done
+    /tag @s remove compilation_expressions_brackets
+    /tag @s remove compilation_expressions_brackets_done
+    /tag @s remove compilation_reverse
+    /tag @s remove compilation_reverse_done
     /tag @s remove compilation_controls
     /tag @s remove compilation_controls_done
     /tag @s remove compilation_validation
@@ -31,7 +35,9 @@ asat(@e[tag=isCustomBlock,tag=block4]) {
         // When inserted storage
         if('data entity @s {Tags:["compilation_empty"]}') {
             /data remove block ~ ~ ~ Items[{Slot:11b}].tag.execution
-            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation set value {error: "", error_desc: ""}
+            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.steps set value {}
+            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.debug set value []
+            /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation set value {error: "", error_desc: "", error_page: "", error_row: "", error_col: ""}
 
             /function computercraft:machines/compiler/compilation/copy_before
             /tag @s remove compilation_empty
@@ -49,9 +55,19 @@ asat(@e[tag=isCustomBlock,tag=block4]) {
                 /function computercraft:machines/compiler/compilation/validation_before
                 /tag @s remove compilation_next
             }
+            if ('data entity @s {Tags:["compilation_reverse_done"]}') {
+                /data modify block ~ ~ ~ Items[{Slot:11b}].tag.steps.reverse set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
+                /function computercraft:machines/compiler/compilation/controls_before
+                /tag @s remove compilation_next
+            }
+            if ('data entity @s {Tags:["compilation_expressions_brackets_done"]}') {
+                /data modify block ~ ~ ~ Items[{Slot:11b}].tag.steps.expressions_brackets set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
+                /function computercraft:machines/compiler/compilation/reverse_before
+                /tag @s remove compilation_next
+            }
             if ('data entity @s {Tags:["compilation_expressions_done"]}') {
                 /data modify block ~ ~ ~ Items[{Slot:11b}].tag.steps.expressions set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
-                /function computercraft:machines/compiler/compilation/controls_before
+                /function computercraft:machines/compiler/compilation/expressions_brackets_before
                 /tag @s remove compilation_next
             }
             if ('data entity @s {Tags:["compilation_grouping_done"]}') {
@@ -70,12 +86,10 @@ asat(@e[tag=isCustomBlock,tag=block4]) {
                 /tag @s remove compilation_next
             }
             if ('data entity @s {Tags:["compilation_merge_done"]}') {
-                /data modify block ~ ~ ~ Items[{Slot:11b}].tag.steps.merge set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
                 /function computercraft:machines/compiler/compilation/translating_before
                 /tag @s remove compilation_next
             }            
             if ('data entity @s {Tags:["compilation_copy_done"]}') {
-                /data modify block ~ ~ ~ Items[{Slot:11b}].tag.steps.copy set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
                 /function computercraft:machines/compiler/compilation/merge_before
                 /tag @s remove compilation_next
             }
@@ -88,6 +102,8 @@ asat(@e[tag=isCustomBlock,tag=block4]) {
         /function computercraft:machines/compiler/compilation/numbers
         /function computercraft:machines/compiler/compilation/grouping
         /function computercraft:machines/compiler/compilation/expressions
+        /function computercraft:machines/compiler/compilation/expressions_brackets
+        /function computercraft:machines/compiler/compilation/reverse
         /function computercraft:machines/compiler/compilation/controls
         /function computercraft:machines/compiler/compilation/validation
         
@@ -98,6 +114,9 @@ asat(@e[tag=isCustomBlock,tag=block4]) {
 
             /data modify block ~ ~ ~ Items[{Slot:13b}].tag.display.Lore prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error
             /data modify block ~ ~ ~ Items[{Slot:13b}].tag.display.Lore append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_desc
+            /data modify block ~ ~ ~ Items[{Slot:13b}].tag.display.Lore append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_page 
+            /data modify block ~ ~ ~ Items[{Slot:13b}].tag.display.Lore append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_row 
+            /data modify block ~ ~ ~ Items[{Slot:13b}].tag.display.Lore append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_col            
         }
 
         // --------------- Compilation done ------------------

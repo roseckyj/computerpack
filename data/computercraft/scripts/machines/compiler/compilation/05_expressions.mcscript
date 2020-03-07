@@ -72,30 +72,75 @@ if('data entity @s {Tags:["compilation_empty_stack"]}') {
     /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.res
     // Pop stack
     pop_stack("expressions")
-    // Save temp to brackets
-    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[0].children set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp
-    // Move brackets to res
-    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.res append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[0]
-    /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[0]
+
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2 set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[0]
+
+    // Stacked brackets
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2{type:"brackets"}') {
+        // Save temp to brackets
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[0].children set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp
+        // Move brackets to res
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.res append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[0]
+        /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[0]
+    }
+
+    // Stacked expression left
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2{type:"expression", parsed:1}') {
+        // Save temp to left side
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[0].left set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp[0]
+    }
+
+    // Stacked expression right
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2{type:"expression", parsed:2}') {
+        // Set to unparsed
+        /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[0].parsed
+        // Save temp to right side
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[0].right set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp[0]
+        // Move expression to res
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.res append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[0]
+        /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[0]
+        
+    }
+
     /tag @s remove compilation_empty_stack
 }
 
 // Read first (last) command from source to TEMP
 /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[0]
 
-if(!'data entity @s {Tags:["compilation_special_type"]}') {
+if(!'data entity @s {Tags:["compilation_break"]}') {
     if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"brackets"}') {
         // If brackets, stack whole memory and use children of brackets as new source
         push_stack("expressions")
         /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp.children
 
-        /tag @s add compilation_special_type
+        /tag @s add compilation_break
+    }
+
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"expression",parsed:1}') {
+        // If expression with left parsed, stack whole memory and use expression.right as new source
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[0].parsed set value 2
+        push_stack("expressions")
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src set value []
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp.right
+
+        /tag @s add compilation_break
+    }
+
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"expression"}') {
+        // If unparsed expression, stack whole memory and use expression.left as new source
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[0].parsed set value 1
+        push_stack("expressions")
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src set value []
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp.left
+
+        /tag @s add compilation_break
     }
 
     // Operator priority:
     //    1:    *   /   %
     //    2:    +   -
-    //    3:    <   <=   >   >=   ..
+    //    3:    <   <=   >   >=
     //    4:    ==   !=
     //    5:    &&
     //    6:    ||
@@ -105,7 +150,7 @@ if(!'data entity @s {Tags:["compilation_special_type"]}') {
         if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"operator",id:"$(operator)"}' && 'data entity @s {Tags:["compilation_expressions_loop_$(priority)"]}') {
             //say Found operator $(operator)
             /function computercraft:machines/compiler/compilation/expressions_process
-            /tag @s add compilation_special_type
+            /tag @s add compilation_break
         }
     }
 
@@ -118,7 +163,6 @@ if(!'data entity @s {Tags:["compilation_special_type"]}') {
     parse_if_priority(">", 3)
     parse_if_priority("<=", 3)
     parse_if_priority(">=", 3)
-    parse_if_priority("..", 3)
     parse_if_priority("==", 4)
     parse_if_priority("!=", 4)
     parse_if_priority("&&", 5)
@@ -128,7 +172,7 @@ if(!'data entity @s {Tags:["compilation_special_type"]}') {
     /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.res append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp
     /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[0]
 }
-/tag @s remove compilation_special_type
+/tag @s remove compilation_break
 
 
 // Helper functions
@@ -138,17 +182,19 @@ if(!'data entity @s {Tags:["compilation_special_type"]}') {
 /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_right set value {}
 /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_right set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions.memory.src[1]
 
-/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_res set value {type: "expression", left: {}, right: {}, id: ""}
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_res set value {type: "expression", left: {}, right: {}, id: "", assignable: 1b}
 /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_res.id set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp.id
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_res.page set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp.page
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_res.slot set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp.slot
 
 /tag @s remove compilation_expressions_left_ok
 /tag @s remove compilation_expressions_right_ok
 
-if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_left{type:"brackets",id:"()"}' || 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_left{type:"number"}' || 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_left{type:"const"}' || 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_left{type:"var"}' || 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_left{type:"expression"}') {
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_left{type:"brackets",id:"()"}' || 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_left{assignable:1b}') {
     /tag @s add compilation_expressions_left_ok
 }
 
-if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_right{type:"brackets",id:"()"}' || 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_right{type:"number"}' || 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_right{type:"const"}' || 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_right{type:"var"}' || 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_right{type:"expression"}') {
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_right{type:"brackets",id:"()"}' || 'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_left{assignable:1b}') {
     /tag @s add compilation_expressions_right_ok
 }
 
@@ -163,8 +209,8 @@ if ('data entity @s {Tags:["compilation_expressions_left_ok"]}' && 'data entity 
 }
 
 if (!'data entity @s {Tags:["compilation_expressions_left_ok"]}') {
-    compilation_error("Invalid expression", "invalid left side of expression")
+    compilation_error("Invalid expression", "invalid left side of expression", "temp")
 }
 if (!'data entity @s {Tags:["compilation_expressions_right_ok"]}') {
-    compilation_error("Invalid expression", "invalid right side of expression")
+    compilation_error("Invalid expression", "invalid right side of expression", "temp")
 }

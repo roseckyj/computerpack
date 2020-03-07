@@ -42,6 +42,8 @@ status('translating', 'Translate items')
 status('numbers', 'Parse numbers')
 status('grouping', 'Group commands')
 status_expressions('expressions', 'Parse expressions')
+status('expressions_brackets', 'Remove brackets from expressions')
+status('reverse', 'Reverse code')
 status('controls', 'Assign control blocks')
 status('validation', 'Validate')
 

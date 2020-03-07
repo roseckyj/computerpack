@@ -21,85 +21,88 @@ if('data entity @s {Tags:["compilation_translating"]}') {
 
 #file: ./translating_loop
 /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[0]
-/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write set value {type: 0}
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write set value {type: "item"}
 /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write.id set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read.id
 /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write.count set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read.Count
 
-modal parse_paper(model, type, id) {
+modal parse_paper(model, type, id, assignable) {
     if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read.tag{CustomModelData:$(model)}') {
-        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write set value {type: "$(type)", id: "$(id)"}
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write set value {type: "$(type)", id: "$(id)", assignable: $(assignable)b}
     }
 }
-modal parse_paper_number(model, type, value) {
+modal parse_paper_number(model, type, value, assignable) {
     if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read.tag{CustomModelData:$(model)}') {
-        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write set value {type: "$(type)", value: $(value)}
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write set value {type: "$(type)", value: $(value), assignable: $(assignable)b}
     }
 }
 
 // Translate known commands
 if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read{id:"minecraft:paper"}') {
-    parse_paper(24002, "cmd_robot", "forward")
-    parse_paper(24003, "cmd_robot", "right")
-    parse_paper(24004, "cmd_robot", "left")
-    parse_paper(24005, "control", "if")
-    parse_paper(24006, "cmd_robot", "dig")
-    parse_paper(24007, "cmd_robot", "up")
-    parse_paper(24008, "cmd_robot", "down")
-    parse_paper(24009, "cmd_robot", "back")
-    parse_paper(24010, "bracket_close", "{}")
-    parse_paper(24011, "bracket_open", "{}")
-    parse_paper(24012, "control", "for")
-    parse_paper(24013, "bracket_close", "()")
-    parse_paper(24014, "bracket_open", "()")
-    parse_paper(24015, "control", "else")
-    parse_paper(24016, "cmd_robot", "dig_up")
-    parse_paper(24017, "cmd_robot", "dig_down")
-    parse_paper(24018, "cmd_robot", "hit")
-    parse_paper(24019, "operator", "..")
-    parse_paper_number(24020, "number", 0)
-    parse_paper_number(24021, "number", 1)
-    parse_paper_number(24022, "number", 2)
-    parse_paper_number(24023, "number", 3)
-    parse_paper_number(24024, "number", 4)
-    parse_paper_number(24025, "number", 5)
-    parse_paper_number(24026, "number", 6)
-    parse_paper_number(24027, "number", 7)
-    parse_paper_number(24028, "number", 8)
-    parse_paper_number(24029, "number", 9)
-    parse_paper(24030, "operator", "==")
-    parse_paper(24031, "operator", "!=")
-    parse_paper(24032, "operator", ">")
-    parse_paper(24033, "operator", "<")
-    parse_paper(24034, "assign_val", "=")
-    parse_paper(24035, "operator", "+")
-    parse_paper(24036, "operator", "-")
-    parse_paper(24037, "operator", "*")
-    parse_paper(24038, "operator", "/")
-    parse_paper(24039, "operator", "%")
-    parse_paper(24040, "const", "X")
-    parse_paper(24041, "const", "Y")
-    parse_paper(24042, "const", "Z")
-    parse_paper(24043, "const", "block_front")
-    parse_paper(24044, "const", "block_up")
-    parse_paper(24045, "const", "block_down")
-    parse_paper(24046, "const", "angle")
-    parse_paper(24047, "const", "mobs")
-    parse_paper(24048, "control", "while")
-    parse_paper(24050, "var", "a")
-    parse_paper(24051, "var", "b")
-    parse_paper(24052, "var", "c")
-    parse_paper(24053, "var", "d")
-    parse_paper(24054, "var", "e")
-    parse_paper(24055, "var", "f")
-    parse_paper(24056, "var", "g")
-    parse_paper(24057, "var", "h")
-    parse_paper(24058, "var", "i")
-    parse_paper(24059, "var", "j")
-    parse_paper(24060, "var", "k")
-    parse_paper(24061, "var", "x")
-    parse_paper(24062, "var", "y")
-    parse_paper(24063, "var", "z")
+    parse_paper(24002, "cmd_robot", "forward", 0)
+    parse_paper(24003, "cmd_robot", "right", 0)
+    parse_paper(24004, "cmd_robot", "left", 0)
+    parse_paper(24005, "control", "if", 0)
+    parse_paper(24006, "cmd_robot", "dig", 0)
+    parse_paper(24007, "cmd_robot", "up", 0)
+    parse_paper(24008, "cmd_robot", "down", 0)
+    parse_paper(24009, "cmd_robot", "back", 0)
+    parse_paper(24010, "bracket_close", "{}", 0)
+    parse_paper(24011, "bracket_open", "{}", 0)
+    parse_paper(24012, "control", "for", 0)
+    parse_paper(24013, "bracket_close", "()", 0)
+    parse_paper(24014, "bracket_open", "()", 0)
+    parse_paper(24015, "control", "else", 0)
+    parse_paper(24016, "cmd_robot", "dig_up", 0)
+    parse_paper(24017, "cmd_robot", "dig_down", 0)
+    parse_paper(24018, "cmd_robot", "hit", 0)
+    parse_paper(24019, "control", "to", 0)
+    parse_paper_number(24020, "number", 0, 1)
+    parse_paper_number(24021, "number", 1, 1)
+    parse_paper_number(24022, "number", 2, 1)
+    parse_paper_number(24023, "number", 3, 1)
+    parse_paper_number(24024, "number", 4, 1)
+    parse_paper_number(24025, "number", 5, 1)
+    parse_paper_number(24026, "number", 6, 1)
+    parse_paper_number(24027, "number", 7, 1)
+    parse_paper_number(24028, "number", 8, 1)
+    parse_paper_number(24029, "number", 9, 1)
+    parse_paper(24030, "operator", "==", 0)
+    parse_paper(24031, "operator", "!=", 0)
+    parse_paper(24032, "operator", ">", 0)
+    parse_paper(24033, "operator", "<", 0)
+    parse_paper(24034, "assign_val", "=", 0)
+    parse_paper(24035, "operator", "+", 0)
+    parse_paper(24036, "operator", "-", 0)
+    parse_paper(24037, "operator", "*", 0)
+    parse_paper(24038, "operator", "/", 0)
+    parse_paper(24039, "operator", "%", 0)
+    parse_paper(24040, "const", "X", 1)
+    parse_paper(24041, "const", "Y", 1)
+    parse_paper(24042, "const", "Z", 1)
+    parse_paper(24043, "const", "block_front", 1)
+    parse_paper(24044, "const", "block_up", 1)
+    parse_paper(24045, "const", "block_down", 1)
+    parse_paper(24046, "const", "angle", 1)
+    parse_paper(24047, "const", "mobs", 1)
+    parse_paper(24048, "control", "while", 0)
+    parse_paper(24050, "var", "a", 1)
+    parse_paper(24051, "var", "b", 1)
+    parse_paper(24052, "var", "c", 1)
+    parse_paper(24053, "var", "d", 1)
+    parse_paper(24054, "var", "e", 1)
+    parse_paper(24055, "var", "f", 1)
+    parse_paper(24056, "var", "g", 1)
+    parse_paper(24057, "var", "h", 1)
+    parse_paper(24058, "var", "i", 1)
+    parse_paper(24059, "var", "j", 1)
+    parse_paper(24060, "var", "k", 1)
+    parse_paper(24061, "var", "x", 1)
+    parse_paper(24062, "var", "y", 1)
+    parse_paper(24063, "var", "z", 1)
 }
+
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write.page set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read.page
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write.slot set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read.Slot
 
 /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write
 /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[0]

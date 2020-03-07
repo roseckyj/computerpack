@@ -10,6 +10,7 @@ if('data entity @s {Tags:["compilation_merge"]}') {
 #file: ./merge_before
 /tag @s remove compilation_merge_done
 /tag @s add compilation_merge
+/scoreboard players set @s temp2 1
 /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
 /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output set value []
 
@@ -21,7 +22,9 @@ if('data entity @s {Tags:["compilation_merge"]}') {
 #file: ./merge_loop
 if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[0][]') {
     /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[0][0]
+    /execute store result block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output[-1].page int 1 run scoreboard players get @s temp2
     /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[0][0]
 } else {
+    /scoreboard players add @s temp2 1
     /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[0]
 }

@@ -1,7 +1,56 @@
+// ------------------- REVERSE LINEAR ---------------------
+
 #file: ./reverse_basic
 
 /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[0]
 /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[0]
 if ('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[]') {
-    /function computercraft:machines/compiler/compilation/reverse
+    /function computercraft:machines/compiler/compilation/reverse_basic
 }
+
+
+// ------------------- REVERSE GROUPED ---------------------
+
+#file: ./reverse
+if('data entity @s {Tags:["compilation_reverse"]}') {
+    /function computercraft:machines/compiler/compilation/reverse_loop
+
+    if (!'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.reverse.memory.src[] unless data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.reverse.stack[]') {
+        /function computercraft:machines/compiler/compilation/reverse_after
+    }
+}
+
+#file: ./reverse_before
+/tag @s remove compilation_reverse_done
+/tag @s add compilation_reverse
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.reverse set value {memory:{src:[],res:[]},stack:[]}
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.reverse.memory.src set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
+
+#file: ./reverse_after
+/tag @s remove compilation_reverse
+/tag @s add compilation_reverse_done
+/tag @s add compilation_next
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.reverse.memory.res
+
+
+#file: ./reverse_loop
+// If source is empty, pop stack
+if (!'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.reverse.memory.src[]') {
+    /tag @s add compilation_empty_stack
+}
+if('data entity @s {Tags:["compilation_empty_stack"]}') {
+    // Store current res to temp
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.reverse.memory.res
+    // Pop stack
+    pop_stack("reverse")
+    // Save temp to brackets
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.reverse.memory.src[0].children set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp
+    // Move brackets to res
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.reverse.memory.res prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.reverse.memory.src[0]
+    /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.reverse.memory.src[0]
+    /tag @s remove compilation_empty_stack
+}
+
+// Read first (last) command from source to TEMP
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.reverse.memory.res prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.reverse.memory.src[0]
+/data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.reverse.memory.src[0]

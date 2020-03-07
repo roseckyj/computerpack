@@ -16,6 +16,9 @@ if('data entity @s {Tags:["compilation_copy"]}') {
 
 
 #file: ./copy_loop
+
 for (1,50) {
-    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output append from block ~ ~ ~ Items[{Slot:11b}].tag.code.$(i)
+    if ('data block ~ ~ ~ Items[{Slot:11b}].tag.code.$(i)') {
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output append from block ~ ~ ~ Items[{Slot:11b}].tag.code.$(i)
+    }
 }

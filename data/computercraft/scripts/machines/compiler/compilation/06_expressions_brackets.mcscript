@@ -1,0 +1,121 @@
+#file: ./expressions_brackets
+if('data entity @s {Tags:["compilation_expressions_brackets"]}') {
+    /tag @s remove compilation_expressions_brackets_iteration_finished
+
+    if (!'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.src[] unless data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.stack[]') {
+        /function computercraft:machines/compiler/compilation/expressions_brackets_after
+    }
+
+    /function computercraft:machines/compiler/compilation/expressions_brackets_loop
+}
+
+#file: ./expressions_brackets_before
+/tag @s remove compilation_expressions_brackets_done
+/tag @s add compilation_expressions_brackets
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets set value {memory:{src:[],res:[]},stack:[]}
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.src set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output
+
+#file: ./expressions_brackets_after
+/tag @s remove compilation_expressions_brackets
+/tag @s add compilation_expressions_brackets_done
+/tag @s add compilation_next
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.output set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.res
+
+
+#file: ./expressions_brackets_loop
+
+// If source is empty, pop stack
+if (!'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.src[]') {
+    /tag @s add compilation_empty_stack
+}
+
+if('data entity @s {Tags:["compilation_empty_stack"]}') {
+    // Store current res to temp
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.res
+    // Pop stack
+    pop_stack("expressions_brackets")
+
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2 set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.src[0]
+
+    // Stacked brackets
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2{type:"brackets"}') {
+        // Save temp to brackets
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.src[0].children set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp
+        // Move brackets to res
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.res append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.src[0]
+        /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.src[0]
+    }
+
+    // Stacked expression left
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2{type:"expression", parsed:1}') {
+        // Save temp to left side
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.src[0].left set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp[0]
+    }
+
+    // Stacked expression right
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2{type:"expression", parsed:2}') {
+        // Set to unparsed
+        /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.src[0].parsed
+        // Save temp to right side
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.src[0].right set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp[0]
+        // Move expression to res
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.res append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.src[0]
+        /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.src[0]
+        
+    }
+
+    /tag @s remove compilation_empty_stack
+}
+
+// Read first (last) command from source to TEMP
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.src[0]
+
+if(!'data entity @s {Tags:["compilation_break"]}') {
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"brackets",id:"()"}') {
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2 set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp.children[0]
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp3 set value {onlyChild:1}
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp3 set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp.children[1]
+        if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2{type:"expression"}') {
+            if ('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp3{onlyChild:1}') {
+                // Brackets with only one expression -> remove brackets
+                /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.src prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp.children[0]
+                /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.src[1]
+            } else {
+                compilation_error("Invalid expression", "Unexpected content within ()", "temp")
+            }
+        }
+    }
+
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"brackets"}') {
+        // If brackets, stack whole memory and use children of brackets as new source
+        push_stack("expressions_brackets")
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.src set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp.children
+
+        /tag @s add compilation_break
+    }
+
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"expression",parsed:1}') {
+        // If expression with left parsed, stack whole memory and use expression.right as new source
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.src[0].parsed set value 2
+        push_stack("expressions_brackets")
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.src set value []
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.src append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp.right
+
+        /tag @s add compilation_break
+    }
+
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"expression"}') {
+        // If unparsed expression, stack whole memory and use expression.left as new source
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.src[0].parsed set value 1
+        push_stack("expressions_brackets")
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.src set value []
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.src append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp.left
+
+        /tag @s add compilation_break
+    }
+
+    // Others
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.res append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp
+    /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.expressions_brackets.memory.src[0]
+}
+/tag @s remove compilation_break

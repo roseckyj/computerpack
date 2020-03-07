@@ -33,11 +33,38 @@ if('data entity @s {Tags:["compilation_empty_stack"]}') {
     /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.res
     // Pop stack
     pop_stack("validation")
-    // Save temp to brackets
-    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src[0].children set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp
-    // Move brackets to res
-    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.res prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src[0]
-    /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src[0]
+
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2 set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src[0]
+
+    // Stacked brackets
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2{type:"brackets"}') {
+        // Save temp to brackets
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src[0].children set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp
+        // Move brackets to res
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.res append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src[0]
+        /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src[0]
+    }
+
+    /*
+    // Stacked if then
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2{type:"control", id:"if", parsed:1}') {
+        // Save temp to then side
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src[0].then set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp
+    }
+
+    // Stacked if else
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2{type:"control", id:"if", parsed:2}') {
+        // Set to unparsed
+        /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src[0].parsed
+        // Save temp to else side
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src[0].else set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp
+        // Move control to res
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.res append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src[0]
+        /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src[0]
+        
+    }
+    */
+
     /tag @s remove compilation_empty_stack
 }
 
@@ -45,32 +72,59 @@ if('data entity @s {Tags:["compilation_empty_stack"]}') {
 /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src[0]
 
 if(!'data entity @s {Tags:["compilation_special_type"]}') {
-    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"brackets",id:"{}"}') {
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"brackets"}') {
         // If brackets, stack whole memory and use children of brackets as new source
         push_stack("validation")
         /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp.children
 
-        /tag @s add compilation_special_type
+        /tag @s add compilation_break
     }
 
-    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"range"}') {
-        compilation_error("Unexpected character", "unexpected range operator outside of expression")
+    /*
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"control", id:"if",parsed:1}') {
+        // If with then parsed, stack whole memory and use control.then as new source
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src[0].parsed set value 2
+        push_stack("validation")
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp.else
+
+        /tag @s add compilation_break
     }
+
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"control", id:"if"}') {
+        // If unparsed if, stack whole memory and use control.condition as new source
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src[0].parsed set value 1
+        push_stack("validation")
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.validation.memory.src set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp.then
+
+        /tag @s add compilation_break
+    }
+    */
+
     if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"number"}') {
-        compilation_error("Unexpected character", "unexpected number outside of expression")
+        compilation_error("Unexpected character", "unexpected number outside of expression", "temp")
     }
-    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"brackets"}') {
-        compilation_error("Unexpected character", "brackets without control block")
-    }
-    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"operator"}') {
-        // This should not happend
-        compilation_error("Internal compilation error", "validation: unparsed operator")
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"brackets",id:"{}"}') {
+        compilation_error("Unexpected character", "brackets without control block", "temp")
     }
     if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"const"}') {
-        compilation_error("Unexpected character", "unexpected constant outside of expression")
+        compilation_error("Unexpected character", "unexpected constant outside of expression", "temp")
     }
     if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"var"}') {
-        compilation_error("Unexpected character", "unexpected variable outside of expression")
+        compilation_error("Unexpected character", "unexpected variable outside of expression", "temp")
+    }
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"control",id:"else"}') {
+        compilation_error("Unexpected character", "unexpected ELSE without coresponding IF", "temp")
+    }
+
+    // Sanity checks - those should not happend
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"operator"}') {
+        compilation_error("Internal compilation error", "validation: unparsed operator", "temp")
+    }
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"range"}') {
+        compilation_error("Unexpected character", "unexpected range operator outside of expression", "temp")
+    }
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"brackets",id:"()"}') {
+        compilation_error("Unexpected character", "unparsed () -> invalid expression", "temp")
     }
 
     // Others

@@ -15,7 +15,7 @@ if('data entity @s {Tags:["compilation_grouping"]}') {
 
 #file: ./grouping_after
 if ('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.stack[]') {
-    compilation_error("Brackets mismatch", "missing closing bracket")
+    compilation_error("Brackets mismatch", "missing closing bracket", "undef")
 }
 /tag @s remove compilation_grouping
 /tag @s add compilation_grouping_done
@@ -27,29 +27,31 @@ if ('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.stack[]') {
 /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[0]
 
 if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"bracket_open"}') {
-    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2 set value {type:"brackets", children: []}
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2 set value {type:"brackets", children: [], assignable: 0b}
     /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2.id set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp.id
-    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.main prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2.page set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp.page
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2.slot set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp.slot
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.main append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2
     /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.stack prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.main
     /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.main set value []
 
 } else if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"bracket_close"}') {
-    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2 set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.stack[0][0]
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2 set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.stack[0][-1]
     
     if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{id:"()"}' && !'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2{id:"()"}') {
-        compilation_error("Brackets mismatch", "`}` expected, but `)` found")
+        compilation_error("Brackets mismatch", "`}` expected, but `)` found", "temp")
     }
     if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{id:"{}"}' && !'data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp2{id:"{}"}') {
-        compilation_error("Brackets mismatch", "`)` expected, but `}` found")
+        compilation_error("Brackets mismatch", "`)` expected, but `}` found", "temp")
     }
 
-    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.stack[0][0].children set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.main
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.stack[0][-1].children set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.main
     /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.main set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.stack[0]
     /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.stack[0]
 
 } else {
     // Standard command
-    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.main prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.grouping.main append from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp
 }
 
 /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.input[0]

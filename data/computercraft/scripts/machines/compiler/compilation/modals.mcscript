@@ -1,14 +1,9 @@
-modal compilation_error(title, description) {
+modal compilation_error(title, description, path) {
     /tag @s add compilation_error
     /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error set value '[{"text":"$(title): ", "italic": false, "bold": true, "color": "white"}]'
     /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_desc set value '[{"text":"  $(description)", "bold": false, "italic": false, "color": "white"}]'
-
-    /tag @s remove compilation_merge
-    /tag @s remove compilation_parsing
-    /tag @s remove compilation_translating
-    /tag @s remove compilation_grouping
-    /tag @s remove compilation_controls
-    /tag @s remove compilation_done
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.$(path)
+    /function computercraft:machines/compiler/compilation/error_location
 }
 
 modal reverse() {
@@ -26,4 +21,109 @@ modal push_stack(memory) {
 modal pop_stack(memory) {
     /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.$(memory).memory set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.$(memory).stack[0]
     /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.$(memory).stack[0]
+}
+
+#file: ./error_location
+for (1, 50) {
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path{page: $(i)}') {
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_page set value '[{"text":"    page: $(i)", "bold": false, "italic": true, "color": "white"}]'
+    }
+}
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path{slot: 0b}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_row set value '[{"text":"    line:   1", "bold": false, "italic": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_col set value '[{"text":"    col:   1", "bold": false, "italic": true, "color": "white"}]'
+}
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path{slot: 1b}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_row set value '[{"text":"    line:   1", "bold": false, "italic": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_col set value '[{"text":"    col:   2", "bold": false, "italic": true, "color": "white"}]'
+}
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path{slot: 2b}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_row set value '[{"text":"    line:   1", "bold": false, "italic": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_col set value '[{"text":"    col:   3", "bold": false, "italic": true, "color": "white"}]'
+}
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path{slot: 3b}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_row set value '[{"text":"    line:   1", "bold": false, "italic": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_col set value '[{"text":"    col:   4", "bold": false, "italic": true, "color": "white"}]'
+}
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path{slot: 4b}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_row set value '[{"text":"    line:   1", "bold": false, "italic": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_col set value '[{"text":"    col:   5", "bold": false, "italic": true, "color": "white"}]'
+}
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path{slot: 5b}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_row set value '[{"text":"    line:   1", "bold": false, "italic": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_col set value '[{"text":"    col:   6", "bold": false, "italic": true, "color": "white"}]'
+}
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path{slot: 6b}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_row set value '[{"text":"    line:   1", "bold": false, "italic": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_col set value '[{"text":"    col:   7", "bold": false, "italic": true, "color": "white"}]'
+}
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path{slot: 7b}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_row set value '[{"text":"    line:   1", "bold": false, "italic": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_col set value '[{"text":"    col:   8", "bold": false, "italic": true, "color": "white"}]'
+}
+
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path{slot: 9b}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_row set value '[{"text":"    line:   2", "bold": false, "italic": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_col set value '[{"text":"    col:   1", "bold": false, "italic": true, "color": "white"}]'
+}
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path{slot: 10b}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_row set value '[{"text":"    line:   2", "bold": false, "italic": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_col set value '[{"text":"    col:   2", "bold": false, "italic": true, "color": "white"}]'
+}
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path{slot: 11b}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_row set value '[{"text":"    line:   2", "bold": false, "italic": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_col set value '[{"text":"    col:   3", "bold": false, "italic": true, "color": "white"}]'
+}
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path{slot: 12b}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_row set value '[{"text":"    line:   2", "bold": false, "italic": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_col set value '[{"text":"    col:   4", "bold": false, "italic": true, "color": "white"}]'
+}
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path{slot: 13b}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_row set value '[{"text":"    line:   2", "bold": false, "italic": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_col set value '[{"text":"    col:   5", "bold": false, "italic": true, "color": "white"}]'
+}
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path{slot: 14b}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_row set value '[{"text":"    line:   2", "bold": false, "italic": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_col set value '[{"text":"    col:   6", "bold": false, "italic": true, "color": "white"}]'
+}
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path{slot: 15b}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_row set value '[{"text":"    line:   2", "bold": false, "italic": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_col set value '[{"text":"    col:   7", "bold": false, "italic": true, "color": "white"}]'
+}
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path{slot: 16b}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_row set value '[{"text":"    line:   2", "bold": false, "italic": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_col set value '[{"text":"    col:   8", "bold": false, "italic": true, "color": "white"}]'
+}
+
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path{slot: 18b}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_row set value '[{"text":"    line:   3", "bold": false, "italic": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_col set value '[{"text":"    col:   1", "bold": false, "italic": true, "color": "white"}]'
+}
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path{slot: 19b}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_row set value '[{"text":"    line:   3", "bold": false, "italic": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_col set value '[{"text":"    col:   2", "bold": false, "italic": true, "color": "white"}]'
+}
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path{slot: 20b}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_row set value '[{"text":"    line:   3", "bold": false, "italic": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_col set value '[{"text":"    col:   3", "bold": false, "italic": true, "color": "white"}]'
+}
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path{slot: 21b}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_row set value '[{"text":"    line:   3", "bold": false, "italic": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_col set value '[{"text":"    col:   4", "bold": false, "italic": true, "color": "white"}]'
+}
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path{slot: 22b}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_row set value '[{"text":"    line:   3", "bold": false, "italic": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_col set value '[{"text":"    col:   5", "bold": false, "italic": true, "color": "white"}]'
+}
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path{slot: 23b}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_row set value '[{"text":"    line:   3", "bold": false, "italic": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_col set value '[{"text":"    col:   6", "bold": false, "italic": true, "color": "white"}]'
+}
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path{slot: 24b}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_row set value '[{"text":"    line:   3", "bold": false, "italic": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_col set value '[{"text":"    col:   7", "bold": false, "italic": true, "color": "white"}]'
+}
+if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_path{slot: 25b}') {
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_row set value '[{"text":"    line:   3", "bold": false, "italic": true, "color": "white"}]'
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.error_col set value '[{"text":"    col:   8", "bold": false, "italic": true, "color": "white"}]'
 }
