@@ -8,6 +8,7 @@
 /scoreboard objectives add temp2 dummy
 /scoreboard objectives add recipe dummy
 /scoreboard objectives add scroll dummy
+/scoreboard objectives add repetitions dummy
 
 /scoreboard objectives add gameTicks dummy
 /scoreboard players set CC gameTicks 0

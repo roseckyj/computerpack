@@ -127,6 +127,15 @@ asat(@e[tag=isCustomBlock,tag=block4]) {
             /data modify block ~ ~ ~ Items[{Slot:11b}].Slot set value 15b
         }
 
+        /*
+        /scoreboard players add @s repetitions 1
+        if ('score @s repetitions matches 0..1') {
+            /function computercraft:machines/compiler/main
+        } else {
+            /scoreboard players set @s repetitions 0
+        }
+        */ 
+
     } else {
         // When no storage inserted
         remove_all_tags()
