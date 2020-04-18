@@ -52,5 +52,19 @@ if('data entity @s {Tags:["compilation_empty_stack"]}') {
 }
 
 // Read first (last) command from source to TEMP
-/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.reverse.memory.res prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.reverse.memory.src[0]
-/data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.reverse.memory.src[0]
+/data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.reverse.memory.src[0]
+
+if(!'data entity @s {Tags:["compilation_break"]}') {
+    if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp{type:"brackets"}') {
+        // If brackets, stack whole memory and use children of brackets as new source
+        push_stack("reverse")
+        /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.reverse.memory.src set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp.children
+
+        /tag @s add compilation_break
+    }
+
+    // Default
+    /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.reverse.memory.res prepend from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp
+    /data remove block ~ ~ ~ Items[{Slot:11b}].tag.compilation.reverse.memory.src[0]
+}
+/tag @s remove compilation_break

@@ -99,6 +99,8 @@ if('data block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read{id:"minecraft:p
     parse_paper(24061, "var", "x", 1)
     parse_paper(24062, "var", "y", 1)
     parse_paper(24063, "var", "z", 1)
+    parse_paper(24064, "operator", "<=", 0)
+    parse_paper(24065, "operator", ">=", 0)
 }
 
 /data modify block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_write.page set from block ~ ~ ~ Items[{Slot:11b}].tag.compilation.temp_read.page

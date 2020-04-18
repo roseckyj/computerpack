@@ -1,6 +1,6 @@
-/function computercraft:machines/printer
-/function computercraft:machines/assembler
-/function computercraft:machines/programmer
+/function computercraft:machines/printer/main
+/function computercraft:machines/assembler/main
+/function computercraft:machines/programmer/main
 /function computercraft:machines/link
 /function computercraft:machines/compiler/main
 /function computercraft:machines/robot/main

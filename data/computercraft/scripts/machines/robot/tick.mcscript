@@ -26,45 +26,32 @@ if('data entity @s HandItems[0].tag.execution.queue[]') {
 
 // --------------- Execute commands ----------------
 
-// Standard command
-if('data entity @s HandItems[0].tag.execution.temp{type:1}') {
-    if('data entity @s HandItems[0].tag.execution.temp{cmd:24002}') {
-        /function computercraft:machines/robot/cmd/fwd
-    }
-    if('data entity @s HandItems[0].tag.execution.temp{cmd:24003}') {
-        /function computercraft:machines/robot/cmd/right
-    }
-    if('data entity @s HandItems[0].tag.execution.temp{cmd:24004}') {
-        /function computercraft:machines/robot/cmd/left
-    }
-    if('data entity @s HandItems[0].tag.execution.temp{cmd:24006}') {
-        /function computercraft:machines/robot/cmd/mine
-    }
-    if('data entity @s HandItems[0].tag.execution.temp{cmd:24007}') {
-        /function computercraft:machines/robot/cmd/up
-    }
-    if('data entity @s HandItems[0].tag.execution.temp{cmd:24008}') {
-        /function computercraft:machines/robot/cmd/down
-    }
-    if('data entity @s HandItems[0].tag.execution.temp{cmd:24009}') {
-        /function computercraft:machines/robot/cmd/back
-    }
-    if('data entity @s HandItems[0].tag.execution.temp{cmd:24016}') {
-        /function computercraft:machines/robot/cmd/mine_up
-    }
-    if('data entity @s HandItems[0].tag.execution.temp{cmd:24017}') {
-        /function computercraft:machines/robot/cmd/mine_down
-    }
-    if('data entity @s HandItems[0].tag.execution.temp{cmd:24018}') {
-        /function computercraft:machines/robot/cmd/hit
+modal cmd_robot(id, funct) {
+    if('data entity @s HandItems[0].tag.execution.temp{id:$(id)}') {
+        /function computercraft:machines/robot/cmd/$(funct)
     }
 }
 
+// Robot commands
+if('data entity @s HandItems[0].tag.execution.temp{type:"cmd_robot"}') {
+    cmd_robot("forward", "fwd")
+    cmd_robot("right", "right")
+    cmd_robot("left", "left")
+    cmd_robot("dig", "mine")
+    cmd_robot("up", "up")
+    cmd_robot("down", "down")
+    cmd_robot("back", "back")
+    cmd_robot("dig_up", "mine_up")
+    cmd_robot("dig_down", "mine_down")
+    cmd_robot("hit", "hit")
+}
+
 // If statement
-if('data entity @s HandItems[0].tag.execution.temp{type:3}') {
+if('data entity @s HandItems[0].tag.execution.temp{type:"control",id:"if"}') {
     // TODO: check for condition
     detect_block(0,1,0,"block_front")
     /execute store success entity @s HandItems[0].tag.execution.block_not_match byte 1 run data modify entity @s HandItems[0].tag.execution.var.block_front set from entity @s HandItems[0].tag.execution.temp.condition[0].id
+    
     if ('data entity @s HandItems[0].tag.execution{block_not_match:0b}') {
         /data modify entity @s HandItems[0].tag.execution.to_enqueue set from entity @s HandItems[0].tag.execution.temp.then
     } else {
